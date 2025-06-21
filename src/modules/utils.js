@@ -1,3 +1,3 @@
 function generateId() {
-    return rypto.randomUUID();
+	return crypto.randomUUID();
 }
