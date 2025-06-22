@@ -4,67 +4,73 @@ const projects = [];
 const tasks = [];
 
 const createProject = (title) => {
-	if (!title || title.trim() === "") {
-		throw new Error("Project title cannot be empty");
-	}
-	return {
-		id: generateId(),
-		title: title.trim(),
-		createdAt: new Date().toISOString(),
-	};
+    if (!title || title.trim() === "") {
+        throw new Error("Project title cannot be empty");
+    }
+    return {
+        id: generateId(),
+        title: title.trim(),
+        createdAt: new Date().toISOString(),
+    };
 };
 
 const createTask = ({
-	title,
-	projectId,
-	parentTaskId = null,
-	priority = null,
+    title,
+    projectId,
+    parentTaskId = null,
+    priority = null,
 }) => {
-	if (!projectId || !title || title.trim() === "") {
-		throw new Error("Project id and title cannot be empty");
-	}
-	return {
-		id: generateId(),
-		projectId: projectId,
-		title: title.trim(),
-		createdAt: new Date().toISOString(),
-		parentTaskId: parentTaskId,
-		priority: priority,
-		checklist: [],
-		status: "todo",
-	};
+    if (!projectId || !title || title.trim() === "") {
+        throw new Error("Project id and title cannot be empty");
+    }
+    return {
+        id: generateId(),
+        projectId: projectId,
+        title: title.trim(),
+        createdAt: new Date().toISOString(),
+        parentTaskId: parentTaskId,
+        priority: priority,
+        checklist: [],
+        status: "todo",
+    };
 };
 
 const addProject = (project) => {
-	projects.push(project);
+    projects.push(project);
 };
 
 const addTask = (task) => {
-	tasks.push(task);
+    tasks.push(task);
 };
 
 const getTasksForProject = (projectId) => {
-	return tasks.filter((task) => task.projectId === projectId);
+    return tasks.filter((task) => task.projectId === projectId);
 };
 const getSubtasks = (parentTaskId) => {
-	return tasks.filter((task) => task.parentTaskId === parentTaskId);
+    return tasks.filter((task) => task.parentTaskId === parentTaskId);
 };
 
 const getAllProjects = () => {
-	return projects;
+    return projects;
 };
 
 const getTaskById = (id) => {
-	return tasks.find((task) => task.id === id);
+    return tasks.find((task) => task.id === id);
+};
+
+const resetData = () => {
+    projects.length = 0;
+    tasks.length = 0;
 };
 
 export {
-	createProject,
-	createTask,
-	addProject,
-	addTask,
-	getAllProjects,
-	getTasksForProject,
-	getSubtasks,
-	getTaskById,
+    createProject,
+    createTask,
+    addProject,
+    addTask,
+    getAllProjects,
+    getTasksForProject,
+    getSubtasks,
+    getTaskById,
+    resetData,
 };
