@@ -1,4 +1,4 @@
-const saveDAta = ({ projects, tasks }) => {
+const saveData = ({ projects, tasks }) => {
     localStorage.setItem("todoData", JSON.stringify({ projects, tasks }));
 };
 
@@ -15,4 +15,4 @@ const clearData = () => {
     localStorage.removeItem("todoData");
 };
 
-export { saveDAta, loadData, clearData };
+export { saveData, loadData, clearData };
