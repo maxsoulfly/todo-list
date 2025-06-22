@@ -6,7 +6,7 @@ import {
     resetData,
 } from "./data";
 
-import { loadData, saveData, clearData } from "./storage.js";
+import { loadData, saveData, clearData } from "./storage";
 
 const initializeApp = () => {
     resetData();

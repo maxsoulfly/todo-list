@@ -1,0 +1,14 @@
+:root {
+    --danger-clr : #f66e84;
+    --warning-clr: #ffc241;
+}
+
+
+
+.priority-high {
+    border-left: 4px solid var(--danger-clr);
+}
+
+.priority-medium {
+    border-left: 4px solid var(--warning-clr);
+}
