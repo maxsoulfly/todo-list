@@ -1,5 +1,11 @@
-import { ta } from "date-fns/locale";
-import { getAllProjects, getTasksForProject } from "./data";
+import {
+    createTask,
+    getAllProjects,
+    getTasksForProject,
+    addTask,
+} from "./data";
+
+import { saveData } from "./storage";
 const renderProjects = () => {
     const appContainer = document.getElementById("app");
     appContainer.innerHTML = "";
@@ -16,6 +22,29 @@ const renderProjects = () => {
         const tasks = renderTasks(project.id);
         projectColumn.append(tasks);
         appContainer.append(projectColumn);
+
+        const addTaskInput = document.createElement("input");
+        projectColumn.append(addTaskInput);
+        addTaskInput.type = "text";
+        addTaskInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                const title = addTaskInput.value.trim();
+                if (!title) return;
+
+                const newTask = createTask({
+                    title,
+                    projectId: project.id,
+                    parentTaskId: null,
+                });
+                addTask(newTask);
+                saveData({
+                    projects: getAllProjects(),
+                    tasks: getTasksForProject(project.id),
+                });
+                renderProjects();
+                addTaskInput.value = ""; // clear input
+            }
+        });
     });
 };
 
@@ -41,3 +70,5 @@ const renderTasks = (projectId) => {
 
     return taskList;
 };
+
+export { renderProjects, renderTasks };
