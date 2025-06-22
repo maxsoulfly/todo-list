@@ -34,3 +34,37 @@ const createTask = ({
 		status: "todo",
 	};
 };
+
+const addProject = (project) => {
+	projects.push(project);
+};
+
+const addTask = (task) => {
+	tasks.push(task);
+};
+
+const getTasksForProject = (projectId) => {
+	return tasks.filter((task) => task.projectId === projectId);
+};
+const getSubtasks = (parentTaskId) => {
+	return tasks.filter((task) => task.parentTaskId === parentTaskId);
+};
+
+const getAllProjects = () => {
+	return projects;
+};
+
+const getTaskById = (id) => {
+	return tasks.find((task) => task.id === id);
+};
+
+export {
+	createProject,
+	createTask,
+	addProject,
+	addTask,
+	getAllProjects,
+	getTasksForProject,
+	getSubtasks,
+	getTaskById,
+};
