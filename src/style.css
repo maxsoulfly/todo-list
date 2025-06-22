@@ -1,14 +1,64 @@
+
 :root {
     --danger-clr : #f66e84;
     --warning-clr: #ffc241;
+    --success-clr: #4caf50;
+    --bg-clr     : #111;
+    --fg-clr     : #eee;
+    --column-bg  : #222;
+    --border-clr : #333;
+    --input-bg   : #111;
+    --input-border: #555;
 }
 
+body {
+    font-family     : monospace;
+    background-color: var(--bg-clr);
+    color           : var(--fg-clr);
+    margin          : 0;
+    padding         : 1rem;
+}
 
+#app {
+    display   : flex;
+    overflow-x: auto;
+    gap       : 1rem;
+}
+
+.project-column {
+    background-color: var(--column-bg);
+    padding         : 1rem;
+    border          : 1px solid var(--border-clr);
+    border-radius   : 8px;
+    min-width       : 250px;
+    flex-shrink     : 0;
+}
+
+.task-list h3 {
+    font-size    : 1rem;
+    margin-bottom: 0.25rem;
+}
+
+input[type="text"] {
+    width           : 100%;
+    margin-top      : 0.5rem;
+    padding         : 0.5rem;
+    background-color: var(--input-bg);
+    border          : 1px solid var(--input-border);
+    color           : var(--fg-clr);
+}
 
 .priority-high {
-    border-left: 4px solid var(--danger-clr);
+    border-left : 4px solid var(--danger-clr);
+    padding-left: 0.5rem;
 }
 
 .priority-medium {
-    border-left: 4px solid var(--warning-clr);
+    border-left : 4px solid var(--warning-clr);
+    padding-left: 0.5rem;
+}
+
+.priority-low {
+    border-left : 4px solid var(--success-clr);
+    padding-left: 0.5rem;
 }
