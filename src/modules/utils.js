@@ -1,3 +1,5 @@
-function generateId() {
-	return crypto.randomUUID();
-}
+const generateId = () => {
+    return crypto.randomUUID();
+};
+
+export { generateId };
