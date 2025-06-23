@@ -3,7 +3,10 @@ const saveData = ({ projects, tasks }) => {
 };
 
 const loadData = () => {
-    const data = JSON.parse(localStorage.getItem("todoData"));
+    const raw = localStorage.getItem("todoData");
+    if (!raw) return { projects: [], tasks: [] };
+
+    const data = JSON.parse(raw);
 
     return {
         projects: data?.projects || [],
