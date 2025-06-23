@@ -4,6 +4,7 @@ import {
     addProject,
     addTask,
     resetData,
+    getAllProjects,
 } from "./data";
 
 import { loadData, saveData, clearData } from "./storage";
@@ -19,7 +20,7 @@ const initializeApp = () => {
     }
 
     projects.forEach(addProject);
-    tasks.forEach(addTask); 
+    tasks.forEach(addTask);
 };
 
 export { initializeApp };
