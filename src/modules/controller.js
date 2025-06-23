@@ -9,6 +9,8 @@ import {
 
 import { loadData, saveData, clearData } from "./storage";
 
+import { renderProjects, renderTasks } from "./ui";
+
 const initializeApp = () => {
     resetData();
     const { projects = [], tasks = [] } = loadData();
@@ -21,6 +23,9 @@ const initializeApp = () => {
 
     projects.forEach(addProject);
     tasks.forEach(addTask);
+
+    renderProjects();
+    renderTasks();
 };
 
 export { initializeApp };
