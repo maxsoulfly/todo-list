@@ -61,6 +61,15 @@ body {
 	gap            : 0.5rem;
 	font-size      : 1rem;
 	margin-bottom  : 0.25rem;
+	padding        : 0.5rem;
+}
+
+.task-list p:hover {
+	/* background-color: var(--input-bg); */
+	box-shadow   : 0 0 4px var(--warning-clr);
+	transition   : background-color 0.2s ease;
+	border-radius: 4px;
+	cursor       : pointer;
 }
 
 .project-controls,
