@@ -1,64 +1,93 @@
-
 :root {
-    --danger-clr : #f66e84;
-    --warning-clr: #ffc241;
-    --success-clr: #4caf50;
-    --bg-clr     : #111;
-    --fg-clr     : #eee;
-    --column-bg  : #222;
-    --border-clr : #333;
-    --input-bg   : #111;
-    --input-border: #555;
+	--danger-clr: #f66e84;
+	--warning-clr: #ffc241;
+	--success-clr: #4caf50;
+	--bg-clr: #111;
+	--fg-clr: #eee;
+	--column-bg: #222;
+	--border-clr: #333;
+	--input-bg: #111;
+	--input-border: #555;
 }
 
 body {
-    font-family     : monospace;
-    background-color: var(--bg-clr);
-    color           : var(--fg-clr);
-    margin          : 0;
-    padding         : 1rem;
+	font-family: monospace;
+	background-color: var(--bg-clr);
+	color: var(--fg-clr);
+	margin: 0;
+	padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
 }
 
 #app {
-    display   : flex;
-    overflow-x: auto;
-    gap       : 1rem;
+	display: flex;
+	overflow-x: auto;
+	gap: 1rem;
 }
 
 .project-column {
-    background-color: var(--column-bg);
-    padding         : 1rem;
-    border          : 1px solid var(--border-clr);
-    border-radius   : 8px;
-    min-width       : 250px;
-    flex-shrink     : 0;
-}
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	background-color: var(--column-bg);
+	padding: 1rem 1rem 2rem 1rem;
 
+	border: 1px solid var(--border-clr);
+	border-radius: 8px;
+	min-width: 250px;
+	flex-shrink: 0;
+}
+.project-column input[type="text"] {
+	width: 100%;
+	box-sizing: border-box;
+}
 .task-list h3 {
-    font-size    : 1rem;
-    margin-bottom: 0.25rem;
+	font-size: 1rem;
+	margin-bottom: 0.25rem;
 }
 
 input[type="text"] {
-    width           : 100%;
-    margin-top      : 0.5rem;
-    padding         : 0.5rem;
-    background-color: var(--input-bg);
-    border          : 1px solid var(--input-border);
-    color           : var(--fg-clr);
+	width: 100%;
+	margin-top: 0.5rem;
+	padding: 0.5rem;
+	background-color: var(--input-bg);
+	border: 1px solid var(--input-border);
+	color: var(--fg-clr);
 }
 
 .priority-high {
-    border-left : 4px solid var(--danger-clr);
-    padding-left: 0.5rem;
+	border-left: 4px solid var(--danger-clr);
+	padding-left: 0.5rem;
 }
 
 .priority-medium {
-    border-left : 4px solid var(--warning-clr);
-    padding-left: 0.5rem;
+	border-left: 4px solid var(--warning-clr);
+	padding-left: 0.5rem;
 }
 
 .priority-low {
-    border-left : 4px solid var(--success-clr);
-    padding-left: 0.5rem;
+	border-left: 4px solid var(--success-clr);
+	padding-left: 0.5rem;
+}
+
+#add-project-btn {
+	background-color: var(--column-bg);
+	color: var(--fg-clr);
+	border: 1px solid var(--border-clr);
+	padding: 0.5rem 1rem;
+	font-family: monospace;
+	font-size: 1rem;
+	cursor: pointer;
+	margin-bottom: 1rem;
+	border-radius: 6px;
+	transition: background-color 0.2s ease;
+	position: sticky;
+	top: 1rem;
+	z-index: 10;
+}
+
+#add-project-btn:hover {
+	background-color: var(--input-border);
 }
