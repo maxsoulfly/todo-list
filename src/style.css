@@ -46,9 +46,31 @@ body {
 }
 
 .task-list p {
-	font-size    : 1rem;
-	margin-bottom: 0.25rem;
+	display        : flex;
+	justify-content: space-between;
+	align-items    : center;
+	gap            : 0.5rem;
+	font-size      : 1rem;
+	margin-bottom  : 0.25rem;
 }
+
+
+.task-controls {
+	display: flex;
+	gap    : 0.5rem;
+}
+
+.task-controls span {
+	cursor     : pointer;
+	color      : var(--warning-clr);
+	font-size  : 0.9rem;
+	user-select: none;
+}
+
+.task-controls span:hover {
+	text-decoration: underline;
+}
+
 
 input[type="text"] {
 	width           : 100%;

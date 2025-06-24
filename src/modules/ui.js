@@ -64,6 +64,20 @@ const renderTasks = (projectId) => {
     tasks.forEach((task) => {
         const title = document.createElement("p");
         title.innerText = task.title;
+
+        const controls = document.createElement("span");
+        controls.classList.add = "task-controls";
+
+        const deleteBtn = document.createElement("span");
+        deleteBtn.innerText = "[X]";
+
+        const editBtn = document.createElement("span");
+        editBtn.innerText = "[Edit]";
+
+        controls.append(editBtn, deleteBtn);
+
+        title.append(controls);
+
         taskList.append(title);
 
         if (task.dueDate) {
