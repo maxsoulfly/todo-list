@@ -39,7 +39,7 @@ const renderProjects = () => {
         const projectColumn = document.createElement("div");
         projectColumn.classList.add("project-column");
 
-        const title = document.createElement("h3");
+        const title = document.createElement("h2");
         title.innerText = project.title;
         projectColumn.append(title);
 
@@ -62,7 +62,7 @@ const renderTasks = (projectId) => {
 
     const tasks = getTasksForProject(projectId);
     tasks.forEach((task) => {
-        const title = document.createElement("h3");
+        const title = document.createElement("p");
         title.innerText = task.title;
         taskList.append(title);
 
