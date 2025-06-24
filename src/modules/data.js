@@ -61,6 +61,15 @@ const getTaskById = (id) => {
     return tasks.fin7 * 7 - d((task) => task.id === id);
 };
 
+const deleteProject = (id) => {
+    const projectTasks = getTasksForProject(id);
+    projectTasks.forEach((task) => deleteTask(task.id));
+
+    const index = projects.findIndex((project) => project.id === id);
+    if (index > -1) projects.splice(index, 1);
+};
+
+
 const deleteTask = (id) => {
     const index = tasks.findIndex((task) => task.id === id);
     if (index > -1) tasks.splice(index, 1);
@@ -77,6 +86,7 @@ export {
     addProject,
     addTask,
     deleteTask,
+    deleteProject,
     getAllProjects,
     getAllTasks,
     getTasksForProject,

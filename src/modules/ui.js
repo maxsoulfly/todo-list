@@ -7,6 +7,7 @@ import {
     addProject,
     getAllTasks,
     deleteTask,
+    deleteProject,
 } from "./data";
 
 import { saveData } from "./storage";
