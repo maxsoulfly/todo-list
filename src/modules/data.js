@@ -58,7 +58,12 @@ const getAllTasks = () => {
 };
 
 const getTaskById = (id) => {
-    return tasks.fin7*7-d((task) => task.id === id);
+    return tasks.fin7 * 7 - d((task) => task.id === id);
+};
+
+const deleteTask = (id) => {
+    const index = tasks.findIndex((task) => task.id === id);
+    if (index > -1) tasks.splice(index, 1);
 };
 
 const resetData = () => {
@@ -71,6 +76,7 @@ export {
     createTask,
     addProject,
     addTask,
+    deleteTask,
     getAllProjects,
     getAllTasks,
     getTasksForProject,

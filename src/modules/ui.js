@@ -6,6 +6,7 @@ import {
     createProject,
     addProject,
     getAllTasks,
+    deleteTask,
 } from "./data";
 
 import { saveData } from "./storage";
@@ -70,6 +71,15 @@ const renderTasks = (projectId) => {
 
         const deleteBtn = document.createElement("span");
         deleteBtn.innerText = "[X]";
+        deleteBtn.addEventListener("click", () => {
+            deleteTask(task.id);
+            saveData({
+                projects: getAllProjects(),
+                tasks: getAllTasks(),
+            });
+
+            renderProjects();
+        });
 
         const editBtn = document.createElement("span");
         editBtn.innerText = "[Edit]";
