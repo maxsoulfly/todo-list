@@ -42,6 +42,28 @@ const renderProjects = () => {
 
         const title = document.createElement("h2");
         title.innerText = project.title;
+
+        const controls = document.createElement("span");
+        controls.classList.add("project-controls");
+
+        const deleteBtn = document.createElement("span");
+        deleteBtn.innerText = "[X]";
+        deleteBtn.addEventListener("click", () => {
+            deleteProject(project.id);
+            saveData({
+                projects: getAllProjects(),
+                tasks: getAllTasks(),
+            });
+
+            renderProjects();
+        });
+
+        const editBtn = document.createElement("span");
+        editBtn.innerText = "[Edit]";
+
+        controls.append(editBtn, deleteBtn);
+
+        title.append(controls);
         projectColumn.append(title);
 
         const tasks = renderTasks(project.id);
@@ -67,7 +89,7 @@ const renderTasks = (projectId) => {
         title.innerText = task.title;
 
         const controls = document.createElement("span");
-        controls.classList.add = "task-controls";
+        controls.classList.add("task-controls");
 
         const deleteBtn = document.createElement("span");
         deleteBtn.innerText = "[X]";

@@ -45,6 +45,15 @@ body {
 	box-sizing: border-box;
 }
 
+.project-column h2 {
+	display        : flex;
+	justify-content: space-between;
+	align-items    : center;
+	margin         : 0;
+	font-size      : 1.5rem;
+	color          : var(--fg-clr);
+}
+
 .task-list p {
 	display        : flex;
 	justify-content: space-between;
@@ -54,21 +63,24 @@ body {
 	margin-bottom  : 0.25rem;
 }
 
-
+.project-controls,
 .task-controls {
 	display: flex;
 	gap    : 0.5rem;
 }
 
+.project-controls span,
 .task-controls span {
-	cursor     : pointer;
 	color      : var(--warning-clr);
 	font-size  : 0.9rem;
 	user-select: none;
 }
 
+.project-controls span:hover,
 .task-controls span:hover {
-	text-decoration: underline;
+	text-shadow: 0 0 4px var(--warning-clr);
+
+	cursor: pointer;
 }
 
 
