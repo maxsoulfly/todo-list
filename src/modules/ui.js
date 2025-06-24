@@ -9,6 +9,26 @@ import {
 
 import { saveData } from "./storage";
 
+const handleAddTaskKeyPress = (e, project, addTaskInput) => {
+	if (e.key !== "Enter") return;
+
+	const title = addTaskInput.value.trim();
+	if (!title) return;
+
+	const newTask = createTask({
+		title,
+		projectId: project.id,
+		parentTaskId: null,
+	});
+	addTask(newTask);
+	saveData({
+		projects: getAllProjects(),
+		tasks: getTasksForProject(project.id),
+	});
+	renderProjects();
+	addTaskInput.value = "";
+};
+
 const renderProjects = () => {
 	const appContainer = document.getElementById("app");
 	appContainer.innerHTML = "";
@@ -29,25 +49,9 @@ const renderProjects = () => {
 		const addTaskInput = document.createElement("input");
 		projectColumn.append(addTaskInput);
 		addTaskInput.type = "text";
-		addTaskInput.addEventListener("keypress", (e) => {
-			if (e.key === "Enter") {
-				const title = addTaskInput.value.trim();
-				if (!title) return;
-
-				const newTask = createTask({
-					title,
-					projectId: project.id,
-					parentTaskId: null,
-				});
-				addTask(newTask);
-				saveData({
-					projects: getAllProjects(),
-					tasks: getTasksForProject(project.id),
-				});
-				renderProjects();
-				addTaskInput.value = ""; // clear input
-			}
-		});
+		addTaskInput.addEventListener("keypress", (e) =>
+			handleAddTaskKeyPress(e, project, addTaskInput)
+		);
 	});
 };
 
