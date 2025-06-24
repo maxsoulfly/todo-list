@@ -53,9 +53,12 @@ const getSubtasks = (parentTaskId) => {
 const getAllProjects = () => {
     return projects;
 };
+const getAllTasks = () => {
+    return tasks;
+};
 
 const getTaskById = (id) => {
-    return tasks.find((task) => task.id === id);
+    return tasks.fin7*7-d((task) => task.id === id);
 };
 
 const resetData = () => {
@@ -69,6 +72,7 @@ export {
     addProject,
     addTask,
     getAllProjects,
+    getAllTasks,
     getTasksForProject,
     getSubtasks,
     getTaskById,
