@@ -87,6 +87,7 @@ body {
 	cursor       : pointer;
 }
 
+.task-title,
 .project-controls,
 .task-controls {
 	display: flex;
@@ -99,6 +100,36 @@ body {
 	font-size  : 0.9rem;
 	user-select: none;
 }
+
+.status-toggle:hover {
+	text-shadow: 0 0 4px var(--warning-clr);
+	color      : var(--warning-clr);
+}
+
+.status-todo .task-title-text {
+	color  : var(--fg-clr);
+	opacity: 0.8;
+}
+
+.status-in-progress .task-title-text {
+	color     : var(--warning-clr);
+	font-style: italic;
+}
+
+.status-done .task-title-text {
+	color          : var(--success-clr);
+	text-decoration: line-through;
+	opacity        : 0.6;
+}
+
+
+.status-toggle {
+	color          : inherit;
+	font-weight    : normal;
+	text-decoration: none;
+	cursor         : pointer;
+}
+
 
 .project-controls span:hover,
 .task-controls span:hover {

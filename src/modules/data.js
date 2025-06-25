@@ -46,6 +46,7 @@ const addTask = (task) => {
 const getTasksForProject = (projectId) => {
     return tasks.filter((task) => task.projectId === projectId);
 };
+
 const getSubtasks = (parentTaskId) => {
     return tasks.filter((task) => task.parentTaskId === parentTaskId);
 };

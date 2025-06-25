@@ -114,6 +114,32 @@ const handleEditTaskKeyDown = (e, task, editTitleInput) => {
     }
 };
 
+const handleStatusToggle = (task) => {
+    const realTask = getAllTasks().find((t) => t.id === task.id);
+    if (!realTask) return;
+
+    console.log("Before:", realTask.status);
+
+    if (realTask.status === "todo") realTask.status = "in-progress";
+    else if (realTask.status === "in-progress") realTask.status = "done";
+    else if (realTask.status === "done") realTask.status = "todo";
+
+    console.log("After:", realTask.status);
+
+    saveData({
+        projects: getAllProjects(),
+        tasks: getAllTasks(),
+    });
+
+    renderProjects();
+};
+
+const renderStatus = (task) => {
+    if (task.status === "todo") return "[ ]";
+    if (task.status === "in-progress") return "[-]";
+    if (task.status === "done") return "[v]";
+};
+
 const renderProjects = () => {
     const appContainer = document.getElementById("app");
     appContainer.innerHTML = "";
@@ -168,13 +194,24 @@ const renderTasks = (projectId) => {
 
     const tasks = getTasksForProject(projectId);
     tasks.forEach((task) => {
-        const title = document.createElement("p");
+        const taskContainer = document.createElement("p");
+
+        const title = document.createElement("span");
+        title.classList.add("task-title");
+
+        const statusToggle = document.createElement("span");
+        statusToggle.classList.add("status-toggle");
+        statusToggle.innerText = renderStatus(task);
+        statusToggle.addEventListener("click", () => handleStatusToggle(task));
+        title.append(statusToggle);
+        taskContainer.classList.add(`status-${task.status}`);
 
         const taskTitle = document.createElement("span");
-        taskTitle.classList.add("task-title");
+        taskTitle.classList.add("task-title-text");
         taskTitle.innerText = task.title;
-
         title.append(taskTitle);
+
+        taskContainer.append(title);
 
         const controls = document.createElement("span");
         controls.classList.add("task-controls");
@@ -191,9 +228,9 @@ const renderTasks = (projectId) => {
 
         controls.append(editBtn, deleteBtn);
 
-        title.append(controls);
+        taskContainer.append(controls);
 
-        taskList.append(title);
+        taskList.append(taskContainer);
 
         if (task.dueDate) {
             const dueDate = document.createElement("p");
