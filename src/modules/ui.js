@@ -12,26 +12,6 @@ import {
 
 import { saveData } from "./storage";
 
-const handleAddTaskKeyPress = (e, project, addTaskInput) => {
-    if (e.key !== "Enter") return;
-
-    const title = addTaskInput.value.trim();
-    if (!title) return;
-
-    const newTask = createTask({
-        title,
-        projectId: project.id,
-        parentTaskId: null,
-    });
-    addTask(newTask);
-    saveData({
-        projects: getAllProjects(),
-        tasks: getAllTasks(),
-    });
-    renderProjects();
-    addTaskInput.value = "";
-};
-
 const handleDeleteProject = (projectId) => {
     deleteProject(projectId);
     saveData({
@@ -71,6 +51,26 @@ const handleEditProjectKeyDown = (e, project, editTitleInput) => {
     if (e.key === "Escape") {
         renderProjects(); // cancel edit
     }
+};
+
+const handleAddTaskKeyPress = (e, project, addTaskInput) => {
+    if (e.key !== "Enter") return;
+
+    const title = addTaskInput.value.trim();
+    if (!title) return;
+
+    const newTask = createTask({
+        title,
+        projectId: project.id,
+        parentTaskId: null,
+    });
+    addTask(newTask);
+    saveData({
+        projects: getAllProjects(),
+        tasks: getAllTasks(),
+    });
+    renderProjects();
+    addTaskInput.value = "";
 };
 
 const handleDeleteTask = (taskId) => {
@@ -208,17 +208,40 @@ const renderTasks = (projectId) => {
     return taskList;
 };
 
-const setupAddProjectButton = () => {
-    const button = document.getElementById("add-project-btn");
-    button.addEventListener("click", () => {
-        const title = prompt("Enter project name");
-        if (!title || title.trim() === "") return;
+const handleAddProjectKeyDown = (e, addProjectInput, addProjectBtn) => {
+    if (e.key === "Enter") {
+        if (!addProjectInput.value || addProjectInput.value.trim() === "") {
+            addProjectInput.replaceWith(addProjectBtn);
+            return;
+        }
 
-        const newProject = createProject(title);
+        const newProject = createProject(addProjectInput.value);
         addProject(newProject);
-        saveData({ projects: getAllProjects(), tasks: [] });
+        saveData({ projects: getAllProjects(), tasks: getAllTasks() });
 
         renderProjects();
+
+        addProjectInput.replaceWith(addProjectBtn);
+    }
+
+    if (e.key === "Escape") {
+        renderProjects(); // cancel add
+
+        addProjectInput.replaceWith(addProjectBtn);
+    }
+};
+
+const setupAddProjectButton = () => {
+    const addProjectBtn = document.getElementById("add-project-btn");
+    addProjectBtn.addEventListener("click", () => {
+        const addProjectInput = document.createElement("input");
+        addProjectInput.id = "add-project-input";
+        addProjectBtn.replaceWith(addProjectInput);
+        addProjectInput.focus();
+
+        addProjectInput.addEventListener("keydown", (e) =>
+            handleAddProjectKeyDown(e, addProjectInput, addProjectBtn)
+        );
     });
 };
 

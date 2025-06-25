@@ -69,7 +69,6 @@ const deleteProject = (id) => {
     if (index > -1) projects.splice(index, 1);
 };
 
-
 const deleteTask = (id) => {
     const index = tasks.findIndex((task) => task.id === id);
     if (index > -1) tasks.splice(index, 1);

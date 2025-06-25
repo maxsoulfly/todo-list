@@ -27,6 +27,21 @@ body {
 	gap       : 1rem;
 }
 
+#add-project-bar {
+	margin-bottom: 1rem;
+}
+
+#add-project-input {
+	font-family     : monospace;
+	font-size       : 1rem;
+	padding         : 0.5rem;
+	background-color: var(--input-bg);
+	border          : 1px solid var(--input-border);
+	color           : var(--fg-clr);
+	border-radius   : 6px;
+	width           : 250px;
+}
+
 .project-column {
 	display         : flex;
 	flex-direction  : column;
