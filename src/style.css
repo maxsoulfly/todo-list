@@ -77,6 +77,8 @@ body {
 	font-size      : 1rem;
 	margin-bottom  : 0.25rem;
 	padding        : 0.5rem;
+	flex-wrap      : nowrap;
+	/* prevents wrapping */
 }
 
 .task-list p:hover {
@@ -85,6 +87,13 @@ body {
 	transition   : background-color 0.2s ease;
 	border-radius: 4px;
 	cursor       : pointer;
+}
+
+.task-title {
+	display    : inline-flex;
+	align-items: center;
+	gap        : 0.5rem;
+	white-space: nowrap;
 }
 
 .task-title,
@@ -99,6 +108,14 @@ body {
 	color      : var(--warning-clr);
 	font-size  : 0.9rem;
 	user-select: none;
+}
+
+.status-toggle {
+	color          : inherit;
+	font-weight    : normal;
+	text-decoration: none;
+	cursor         : pointer;
+	overflow-wrap  : normal;
 }
 
 .status-toggle:hover {
@@ -123,19 +140,17 @@ body {
 }
 
 
-.status-toggle {
-	color          : inherit;
-	font-weight    : normal;
-	text-decoration: none;
-	cursor         : pointer;
-}
-
 
 .project-controls span:hover,
 .task-controls span:hover {
 	text-shadow: 0 0 4px var(--warning-clr);
 
 	cursor: pointer;
+}
+
+.edit-title-input {
+	flex     : 1;
+	min-width: 0;
 }
 
 input.edit-title-input,
