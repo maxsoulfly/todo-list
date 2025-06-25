@@ -42,7 +42,11 @@ const renderProjects = () => {
         projectColumn.classList.add("project-column");
 
         const title = document.createElement("h2");
-        title.innerText = project.title;
+        const projectTitle = document.createElement("span");
+        projectTitle.classList.add("task-title");
+        projectTitle.innerText = project.title;
+
+        title.append(projectTitle);
 
         const controls = document.createElement("span");
         controls.classList.add("project-controls");
@@ -61,7 +65,35 @@ const renderProjects = () => {
 
         const editBtn = document.createElement("span");
         editBtn.innerText = "[Edit]";
+        editBtn.addEventListener("click", () => {
+            const editTitleInput = document.createElement("input");
+            editTitleInput.classList.add("edit-title-input");
+            editTitleInput.value = project.title;
+            projectTitle.replaceWith(editTitleInput);
+            editTitleInput.focus();
 
+            editTitleInput.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") {
+                    if (
+                        !editTitleInput.value ||
+                        editTitleInput.value.trim() === ""
+                    ) {
+                        renderProjects();
+                        return;
+                    }
+                    project.title = editTitleInput.value.trim();
+                    saveData({
+                        projects: getAllProjects(),
+                        tasks: getAllTasks(),
+                    });
+                    renderProjects();
+                }
+
+                if (e.key === "Escape") {
+                    renderProjects(); // cancel edit
+                }
+            });
+        });
         controls.append(editBtn, deleteBtn);
 
         title.append(controls);
