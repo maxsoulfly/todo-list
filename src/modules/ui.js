@@ -87,7 +87,12 @@ const renderTasks = (projectId) => {
     const tasks = getTasksForProject(projectId);
     tasks.forEach((task) => {
         const title = document.createElement("p");
-        title.innerText = task.title;
+
+        const taskTitle = document.createElement("span");
+        taskTitle.classList.add("task-title");
+        taskTitle.innerText = task.title;
+
+        title.append(taskTitle);
 
         const controls = document.createElement("span");
         controls.classList.add("task-controls");
@@ -106,6 +111,35 @@ const renderTasks = (projectId) => {
 
         const editBtn = document.createElement("span");
         editBtn.innerText = "[Edit]";
+        editBtn.addEventListener("click", () => {
+            const editTitleInput = document.createElement("input");
+            editTitleInput.classList.add("edit-title-input");
+            editTitleInput.value = task.title;
+            taskTitle.replaceWith(editTitleInput);
+            editTitleInput.focus();
+
+            editTitleInput.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") {
+                    if (
+                        !editTitleInput.value ||
+                        editTitleInput.value.trim() === ""
+                    ) {
+                        renderProjects();
+                        return;
+                    }
+                    task.title = editTitleInput.value.trim();
+                    saveData({
+                        projects: getAllProjects(),
+                        tasks: getAllTasks(),
+                    });
+                    renderProjects();
+                }
+
+                if (e.key === "Escape") {
+                    renderProjects(); // cancel edit
+                }
+            });
+        });
 
         controls.append(editBtn, deleteBtn);
 
