@@ -32,6 +32,88 @@ const handleAddTaskKeyPress = (e, project, addTaskInput) => {
     addTaskInput.value = "";
 };
 
+const handleDeleteProject = (projectId) => {
+    deleteProject(projectId);
+    saveData({
+        projects: getAllProjects(),
+        tasks: getAllTasks(),
+    });
+
+    renderProjects();
+};
+
+const handleEditProject = (project, projectTitle) => {
+    const editTitleInput = document.createElement("input");
+    editTitleInput.classList.add("edit-title-input");
+    editTitleInput.value = project.title;
+    projectTitle.replaceWith(editTitleInput);
+    editTitleInput.focus();
+
+    editTitleInput.addEventListener("keydown", (e) =>
+        handleEditProjectKeyDown(e, project, editTitleInput)
+    );
+};
+
+const handleEditProjectKeyDown = (e, project, editTitleInput) => {
+    if (e.key === "Enter") {
+        if (!editTitleInput.value || editTitleInput.value.trim() === "") {
+            renderProjects();
+            return;
+        }
+        project.title = editTitleInput.value.trim();
+        saveData({
+            projects: getAllProjects(),
+            tasks: getAllTasks(),
+        });
+        renderProjects();
+    }
+
+    if (e.key === "Escape") {
+        renderProjects(); // cancel edit
+    }
+};
+
+const handleDeleteTask = (taskId) => {
+    deleteTask(taskId);
+    saveData({
+        projects: getAllProjects(),
+        tasks: getAllTasks(),
+    });
+
+    renderProjects();
+};
+
+const handleEditTask = (task, taskTitle) => {
+    const editTitleInput = document.createElement("input");
+    editTitleInput.classList.add("edit-title-input");
+    editTitleInput.value = task.title;
+    taskTitle.replaceWith(editTitleInput);
+    editTitleInput.focus();
+
+    editTitleInput.addEventListener("keydown", (e) =>
+        handleEditTaskKeyDown(e, task, editTitleInput)
+    );
+};
+
+const handleEditTaskKeyDown = (e, task, editTitleInput) => {
+    if (e.key === "Enter") {
+        if (!editTitleInput.value || editTitleInput.value.trim() === "") {
+            renderProjects();
+            return;
+        }
+        task.title = editTitleInput.value.trim();
+        saveData({
+            projects: getAllProjects(),
+            tasks: getAllTasks(),
+        });
+        renderProjects();
+    }
+
+    if (e.key === "Escape") {
+        renderProjects(); // cancel edit
+    }
+};
+
 const renderProjects = () => {
     const appContainer = document.getElementById("app");
     appContainer.innerHTML = "";
@@ -53,47 +135,15 @@ const renderProjects = () => {
 
         const deleteBtn = document.createElement("span");
         deleteBtn.innerText = "[X]";
-        deleteBtn.addEventListener("click", () => {
-            deleteProject(project.id);
-            saveData({
-                projects: getAllProjects(),
-                tasks: getAllTasks(),
-            });
-
-            renderProjects();
-        });
+        deleteBtn.addEventListener("click", () =>
+            handleDeleteProject(project.id)
+        );
 
         const editBtn = document.createElement("span");
         editBtn.innerText = "[Edit]";
-        editBtn.addEventListener("click", () => {
-            const editTitleInput = document.createElement("input");
-            editTitleInput.classList.add("edit-title-input");
-            editTitleInput.value = project.title;
-            projectTitle.replaceWith(editTitleInput);
-            editTitleInput.focus();
-
-            editTitleInput.addEventListener("keydown", (e) => {
-                if (e.key === "Enter") {
-                    if (
-                        !editTitleInput.value ||
-                        editTitleInput.value.trim() === ""
-                    ) {
-                        renderProjects();
-                        return;
-                    }
-                    project.title = editTitleInput.value.trim();
-                    saveData({
-                        projects: getAllProjects(),
-                        tasks: getAllTasks(),
-                    });
-                    renderProjects();
-                }
-
-                if (e.key === "Escape") {
-                    renderProjects(); // cancel edit
-                }
-            });
-        });
+        editBtn.addEventListener("click", () =>
+            handleEditProject(project, projectTitle)
+        );
         controls.append(editBtn, deleteBtn);
 
         title.append(controls);
@@ -131,47 +181,13 @@ const renderTasks = (projectId) => {
 
         const deleteBtn = document.createElement("span");
         deleteBtn.innerText = "[X]";
-        deleteBtn.addEventListener("click", () => {
-            deleteTask(task.id);
-            saveData({
-                projects: getAllProjects(),
-                tasks: getAllTasks(),
-            });
-
-            renderProjects();
-        });
+        deleteBtn.addEventListener("click", () => handleDeleteTask(task.id));
 
         const editBtn = document.createElement("span");
         editBtn.innerText = "[Edit]";
-        editBtn.addEventListener("click", () => {
-            const editTitleInput = document.createElement("input");
-            editTitleInput.classList.add("edit-title-input");
-            editTitleInput.value = task.title;
-            taskTitle.replaceWith(editTitleInput);
-            editTitleInput.focus();
-
-            editTitleInput.addEventListener("keydown", (e) => {
-                if (e.key === "Enter") {
-                    if (
-                        !editTitleInput.value ||
-                        editTitleInput.value.trim() === ""
-                    ) {
-                        renderProjects();
-                        return;
-                    }
-                    task.title = editTitleInput.value.trim();
-                    saveData({
-                        projects: getAllProjects(),
-                        tasks: getAllTasks(),
-                    });
-                    renderProjects();
-                }
-
-                if (e.key === "Escape") {
-                    renderProjects(); // cancel edit
-                }
-            });
-        });
+        editBtn.addEventListener("click", () =>
+            handleEditTask(task, taskTitle)
+        );
 
         controls.append(editBtn, deleteBtn);
 
