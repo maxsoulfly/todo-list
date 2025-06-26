@@ -19,6 +19,7 @@ const createTask = ({
     projectId,
     parentTaskId = null,
     priority = null,
+    dueDate = null,
 }) => {
     if (!projectId || !title || title.trim() === "") {
         throw new Error("Project id and title cannot be empty");
@@ -32,6 +33,7 @@ const createTask = ({
         priority: priority,
         checklist: [],
         status: "todo",
+        dueDate: dueDate,
     };
 };
 

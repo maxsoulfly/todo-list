@@ -113,16 +113,24 @@ body {
 	box-shadow: 0 0 8px var(--priority-null-clr);
 }
 
+
 .task-title {
 	display    : inline-flex;
-	align-items: center;
+	align-items: flex-start;
 	gap        : 0.5rem;
 	white-space: nowrap;
+	flex-wrap  : wrap;
+
+}
+
+.task-controls {
+	margin-left: auto;
+	align-self : flex-start;
 }
 
 .task-title,
-.project-controls,
-.task-controls {
+.task-controls,
+.project-controls {
 	display: flex;
 	gap    : 0.5rem;
 }
@@ -148,8 +156,15 @@ body {
 }
 
 .status-todo .task-title-text {
-	color  : var(--todo-clr);
-	opacity: 0.8;
+	display       : inline-block;
+	max-width     : 12rem;
+	/* adjust to fit your layout */
+	overflow-wrap : break-word;
+	word-break    : break-word;
+	white-space   : normal;
+	vertical-align: middle;
+	color         : var(--todo-clr);
+	opacity       : 0.8;
 }
 
 .status-in-progress .task-title-text {
@@ -231,4 +246,27 @@ input[type="text"] {
 
 #add-project-btn:hover {
 	background-color: var(--input-border);
+}
+
+
+
+.due-date-badge {
+	background-color: #333;
+	color           : #999;
+	font-size       : 0.7rem;
+	padding         : 2px 6px;
+	border-radius   : 4px;
+	cursor          : pointer;
+	transition      : opacity 0.2s ease;
+}
+
+.due-date-badge[data-empty="true"] {
+	color     : transparent;
+	background: transparent;
+}
+
+.due-date-badge[data-empty="true"]:hover {
+	color     : #aaa;
+	background: #222;
+	border    : 1px dashed #444;
 }

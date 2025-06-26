@@ -152,6 +152,10 @@ const handleStatusToggle = (task) => {
 
     renderProjects();
 };
+const formatDate = (isoDate) => {
+    const options = { month: "short", day: "numeric" }; // e.g. Jun 26
+    return new Date(isoDate).toLocaleDateString(undefined, options);
+};
 
 const renderStatus = (task) => {
     if (task.status === "todo") return "[ ]";
@@ -224,6 +228,7 @@ const renderTasks = (projectId) => {
         priorityBar.addEventListener("click", () => handlePriorityToggle(task));
         priorityBar.dataset.taskId = task.id;
         priorityBar.dataset.projectId = projectId;
+        priorityBar.title = `[Priority: ${task.priority}] - Click to toggle priority`;
         title.append(priorityBar);
 
         const statusToggle = document.createElement("span");
@@ -239,6 +244,22 @@ const renderTasks = (projectId) => {
         title.append(taskTitle);
 
         taskContainer.append(title);
+
+        const dueDate = document.createElement("span");
+        dueDate.classList.add("due-date");
+        dueDate.classList.add("due-date-badge");
+        dueDate.title = task.dueDate
+            ? `Due: ${formatDate(task.dueDate)} — Click to change`
+            : "Click to set due date";
+
+        dueDate.textContent = task.dueDate
+            ? formatDate(task.dueDate)
+            : "No due date";
+
+        title.append(dueDate);
+        if (!task.dueDate) {
+            dueDate.dataset.empty = "true";
+        }
 
         const controls = document.createElement("span");
         controls.classList.add("task-controls");
@@ -258,12 +279,6 @@ const renderTasks = (projectId) => {
         taskContainer.append(controls);
 
         taskList.append(taskContainer);
-
-        if (task.dueDate) {
-            const dueDate = document.createElement("p");
-            dueDate.innerText = `Due date: ${task.dueDate}`;
-            taskList.append(dueDate);
-        }
     });
 
     return taskList;
