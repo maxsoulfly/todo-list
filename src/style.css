@@ -1,7 +1,17 @@
 :root {
-	--danger-clr  : #f66e84;
-	--warning-clr : #ffc241;
-	--success-clr : #4caf50;
+	--danger-clr : #f66e84;
+	--warning-clr: #ffc241;
+	--success-clr: #4caf50;
+
+	--todo-clr       : #CCCCCC;
+	--in-progress-clr: #FF9800;
+	--done-clr       : #A5D6A7;
+
+	--priority-null-clr  : #444;
+	--priority-low-clr   : #4caf50;
+	--priority-medium-clr: #FFB300;
+	--priority-high-clr  : #FF5252;
+
 	--bg-clr      : #111;
 	--fg-clr      : #eee;
 	--column-bg   : #222;
@@ -82,11 +92,25 @@ body {
 }
 
 .task-list p:hover {
-	/* background-color: var(--input-bg); */
-	box-shadow   : 0 0 4px var(--warning-clr);
 	transition   : background-color 0.2s ease;
-	border-radius: 4px;
+	border-radius: 8px;
 	cursor       : pointer;
+}
+
+.task-list p.priority-low:hover {
+	box-shadow: 0 0 8px var(--priority-low-clr);
+}
+
+.task-list p.priority-medium:hover {
+	box-shadow: 0 0 8px var(--priority-medium-clr);
+}
+
+.task-list p.priority-high:hover {
+	box-shadow: 0 0 8px var(--priority-high-clr);
+}
+
+.task-list p.priority-null:hover {
+	box-shadow: 0 0 8px var(--priority-null-clr);
 }
 
 .task-title {
@@ -119,22 +143,22 @@ body {
 }
 
 .status-toggle:hover {
-	text-shadow: 0 0 4px var(--warning-clr);
+	text-shadow: 0 0 8px var(--warning-clr);
 	color      : var(--warning-clr);
 }
 
 .status-todo .task-title-text {
-	color  : var(--fg-clr);
+	color  : var(--todo-clr);
 	opacity: 0.8;
 }
 
 .status-in-progress .task-title-text {
-	color     : var(--warning-clr);
+	color     : var(--in-progress-clr);
 	font-style: italic;
 }
 
 .status-done .task-title-text {
-	color          : var(--success-clr);
+	color          : var(--done-clr);
 	text-decoration: line-through;
 	opacity        : 0.6;
 }
@@ -143,7 +167,7 @@ body {
 
 .project-controls span:hover,
 .task-controls span:hover {
-	text-shadow: 0 0 4px var(--warning-clr);
+	text-shadow: 0 0 8px var(--warning-clr);
 
 	cursor: pointer;
 }
@@ -163,19 +187,30 @@ input[type="text"] {
 	color           : var(--fg-clr);
 }
 
-.priority-high {
-	border-left : 4px solid var(--danger-clr);
-	padding-left: 0.5rem;
+.priority-bar {
+	display       : inline-block;
+	width         : 8px;
+	height        : 1.2em;
+	vertical-align: middle;
+	margin-right  : 0.5rem;
+	cursor        : pointer;
+	border-left   : 8px solid transparent;
 }
 
-.priority-medium {
-	border-left : 4px solid var(--warning-clr);
-	padding-left: 0.5rem;
+.priority-bar.priority-low {
+	border-color: var(--priority-low-clr);
 }
 
-.priority-low {
-	border-left : 4px solid var(--success-clr);
-	padding-left: 0.5rem;
+.priority-bar.priority-medium {
+	border-color: var(--priority-medium-clr);
+}
+
+.priority-bar.priority-high {
+	border-color: var(--priority-high-clr);
+}
+
+.priority-bar.priority-null {
+	border-color: var(--priority-null-clr);
 }
 
 #add-project-btn {

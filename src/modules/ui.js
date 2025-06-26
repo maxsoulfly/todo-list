@@ -113,7 +113,26 @@ const handleEditTaskKeyDown = (e, task, editTitleInput) => {
         renderProjects(); // cancel edit
     }
 };
+const handlePriorityToggle = (task) => {
+    const realTask = getAllTasks().find((t) => t.id === task.id);
+    if (!realTask) return;
+    const nextPriority = {
+        null: "low",
+        low: "medium",
+        medium: "high",
+        high: null,
+    };
 
+    // console.log("Before:", realTask.priority);
+    task.priority = nextPriority[task.priority];
+    // console.log("After:", realTask.priority);
+
+    saveData({
+        projects: getAllProjects(),
+        tasks: getAllTasks(),
+    });
+    renderProjects();
+};
 const handleStatusToggle = (task) => {
     const realTask = getAllTasks().find((t) => t.id === task.id);
     if (!realTask) return;
@@ -195,9 +214,17 @@ const renderTasks = (projectId) => {
     const tasks = getTasksForProject(projectId);
     tasks.forEach((task) => {
         const taskContainer = document.createElement("p");
+        taskContainer.classList.add(`priority-${task.priority}`);
 
         const title = document.createElement("span");
         title.classList.add("task-title");
+
+        const priorityBar = document.createElement("span");
+        priorityBar.classList.add("priority-bar", `priority-${task.priority}`);
+        priorityBar.addEventListener("click", () => handlePriorityToggle(task));
+        priorityBar.dataset.taskId = task.id;
+        priorityBar.dataset.projectId = projectId;
+        title.append(priorityBar);
 
         const statusToggle = document.createElement("span");
         statusToggle.classList.add("status-toggle");
@@ -236,9 +263,6 @@ const renderTasks = (projectId) => {
             const dueDate = document.createElement("p");
             dueDate.innerText = `Due date: ${task.dueDate}`;
             taskList.append(dueDate);
-        }
-        if (task.priority) {
-            taskList.classList.add(`priority-${task.priority}`);
         }
     });
 
