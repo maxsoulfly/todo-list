@@ -155,16 +155,20 @@ body {
 	color      : var(--warning-clr);
 }
 
-.status-todo .task-title-text {
+.status-todo .task-title-text,
+.status-in-progress .task-title-text,
+.status-done .task-title-text {
 	display       : inline-block;
 	max-width     : 12rem;
-	/* adjust to fit your layout */
 	overflow-wrap : break-word;
 	word-break    : break-word;
 	white-space   : normal;
 	vertical-align: middle;
-	color         : var(--todo-clr);
-	opacity       : 0.8;
+}
+
+.status-todo .task-title-text {
+	color  : var(--todo-clr);
+	opacity: 0.8;
 }
 
 .status-in-progress .task-title-text {
