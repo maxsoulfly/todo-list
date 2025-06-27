@@ -198,6 +198,7 @@ const renderProjects = () => {
         const projectColumn = document.createElement("div");
         projectColumn.classList.add("project-column");
 
+        // Title
         const title = document.createElement("h2");
         const projectTitle = document.createElement("span");
         projectTitle.classList.add("task-title");
@@ -205,6 +206,7 @@ const renderProjects = () => {
 
         title.append(projectTitle);
 
+        // Controls
         const controls = document.createElement("span");
         controls.classList.add("project-controls");
 
@@ -224,6 +226,7 @@ const renderProjects = () => {
         title.append(controls);
         projectColumn.append(title);
 
+        // Tasks
         const tasks = renderTasks(project.id);
         projectColumn.append(tasks);
         appContainer.append(projectColumn);
@@ -237,6 +240,83 @@ const renderProjects = () => {
     });
 };
 
+const renderTaskPriorityBar = (task, projectId) => {
+    const priorityBar = document.createElement("span");
+    priorityBar.classList.add("priority-bar", `priority-${task.priority}`);
+    priorityBar.addEventListener("click", () => handlePriorityToggle(task));
+    priorityBar.dataset.taskId = task.id;
+    priorityBar.dataset.projectId = projectId;
+    priorityBar.title = `[Priority: ${task.priority}] - Click to toggle priority`;
+
+    return priorityBar;
+};
+
+const renderTaskStatusToggle = (task) => {
+    const statusToggle = document.createElement("span");
+    statusToggle.classList.add("status-toggle");
+    statusToggle.innerText = renderStatus(task);
+    statusToggle.addEventListener("click", () => handleStatusToggle(task));
+    return statusToggle;
+};
+
+const renderTaskTitle = (task) => {
+    const taskTitle = document.createElement("span");
+    taskTitle.classList.add("task-title-text");
+    taskTitle.innerText = task.title;
+    return taskTitle;
+};
+
+const renderTaskDueDate = (task, projectId) => {
+    const dueDate = document.createElement("span");
+    dueDate.classList.add("due-date");
+    dueDate.classList.add("due-date-badge");
+    dueDate.dataset.taskId = task.id;
+    dueDate.dataset.projectId = projectId;
+    dueDate.title = task.dueDate
+        ? `Due: ${formatDate(task.dueDate)} — Click to change`
+        : "Click to set due date";
+    dueDate.textContent = task.dueDate
+        ? formatDate(task.dueDate)
+        : "No due date";
+    dueDate.addEventListener("click", () => {
+        handleDueDateEdit(task);
+    });
+
+    if (!task.dueDate) {
+        dueDate.dataset.empty = "true";
+    }
+
+    return dueDate;
+};
+
+const renderTaskTitleContainer = (task, projectId) => {
+    const titleContainer = document.createElement("span");
+    titleContainer.classList.add("task-title");
+    titleContainer.append(renderTaskPriorityBar(task, projectId));
+    titleContainer.append(renderTaskStatusToggle(task));
+    const taskTitle = renderTaskTitle(task);
+    titleContainer.append(taskTitle);
+    titleContainer.append(renderTaskDueDate(task, projectId));
+
+    return { titleContainer, taskTitle };
+};
+
+const renderTaskControls = (task, taskTitle) => {
+    const controls = document.createElement("span");
+    controls.classList.add("task-controls");
+
+    const deleteBtn = document.createElement("span");
+    deleteBtn.innerText = "[X]";
+    deleteBtn.addEventListener("click", () => handleDeleteTask(task.id));
+
+    const editBtn = document.createElement("span");
+    editBtn.innerText = "[Edit]";
+    editBtn.addEventListener("click", () => handleEditTask(task, taskTitle));
+    controls.append(editBtn, deleteBtn);
+
+    return controls;
+};
+
 const renderTasks = (projectId) => {
     const taskList = document.createElement("div");
     taskList.classList.add("task-list");
@@ -244,75 +324,17 @@ const renderTasks = (projectId) => {
     const tasks = getTasksForProject(projectId);
     tasks.forEach((task) => {
         const taskContainer = document.createElement("p");
+
         taskContainer.classList.add(`priority-${task.priority}`);
-
-        // title container
-        const title = document.createElement("span");
-        title.classList.add("task-title");
-
-        // priority bar
-        const priorityBar = document.createElement("span");
-        priorityBar.classList.add("priority-bar", `priority-${task.priority}`);
-        priorityBar.addEventListener("click", () => handlePriorityToggle(task));
-        priorityBar.dataset.taskId = task.id;
-        priorityBar.dataset.projectId = projectId;
-        priorityBar.title = `[Priority: ${task.priority}] - Click to toggle priority`;
-        title.append(priorityBar);
-
-        // status toggle
-        const statusToggle = document.createElement("span");
-        statusToggle.classList.add("status-toggle");
-        statusToggle.innerText = renderStatus(task);
-        statusToggle.addEventListener("click", () => handleStatusToggle(task));
-        title.append(statusToggle);
         taskContainer.classList.add(`status-${task.status}`);
 
-        // title
-        const taskTitle = document.createElement("span");
-        taskTitle.classList.add("task-title-text");
-        taskTitle.innerText = task.title;
-        title.append(taskTitle);
-
-        taskContainer.append(title);
-
-        // Due date
-        const dueDate = document.createElement("span");
-        dueDate.classList.add("due-date");
-        dueDate.classList.add("due-date-badge");
-        dueDate.dataset.taskId = task.id;
-        dueDate.dataset.projectId = projectId;
-        dueDate.title = task.dueDate
-            ? `Due: ${formatDate(task.dueDate)} — Click to change`
-            : "Click to set due date";
-        dueDate.textContent = task.dueDate
-            ? formatDate(task.dueDate)
-            : "No due date";
-        dueDate.addEventListener("click", () => {
-            handleDueDateEdit(task);
-        });
-
-        title.append(dueDate);
-
-        if (!task.dueDate) {
-            dueDate.dataset.empty = "true";
-        }
-
-        // controlls
-        const controls = document.createElement("span");
-        controls.classList.add("task-controls");
-
-        const deleteBtn = document.createElement("span");
-        deleteBtn.innerText = "[X]";
-        deleteBtn.addEventListener("click", () => handleDeleteTask(task.id));
-
-        const editBtn = document.createElement("span");
-        editBtn.innerText = "[Edit]";
-        editBtn.addEventListener("click", () =>
-            handleEditTask(task, taskTitle)
+        const { titleContainer, taskTitle } = renderTaskTitleContainer(
+            task,
+            projectId
         );
-
-        controls.append(editBtn, deleteBtn);
-        taskContainer.append(controls);
+        taskContainer.append(titleContainer);
+        
+        taskContainer.append(renderTaskControls(task, taskTitle));
 
         taskList.append(taskContainer);
     });
