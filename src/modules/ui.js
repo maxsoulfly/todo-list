@@ -189,6 +189,52 @@ const renderStatus = (task) => {
     if (task.status === "done") return "[v]";
 };
 
+const renderProjectTitle = (project) => {
+    const projectTitle = document.createElement("span");
+    projectTitle.classList.add("task-title");
+    projectTitle.innerText = project.title;
+    return projectTitle;
+};
+
+const renderProjectControls = (project, projectTitle) => {
+    const controls = document.createElement("span");
+    controls.classList.add("project-controls");
+
+    const deleteBtn = document.createElement("span");
+    deleteBtn.innerText = "[X]";
+    deleteBtn.addEventListener("click", () => handleDeleteProject(project.id));
+
+    const editBtn = document.createElement("span");
+    editBtn.innerText = "[Edit]";
+    editBtn.addEventListener("click", () =>
+        handleEditProject(project, projectTitle)
+    );
+    controls.append(editBtn, deleteBtn);
+
+    return controls;
+};
+
+const renderProjectHeader = (project) => {
+    const header = document.createElement("h2");
+
+    const projectTitle = renderProjectTitle(project);
+    const controls = renderProjectControls(project, projectTitle);
+
+    header.append(projectTitle, controls);
+
+    return header;
+};
+
+const renderAddTaskInput = (project) => {
+    const input = document.createElement("input");
+    input.type = "text";
+    input.addEventListener("keypress", (e) =>
+        handleAddTaskKeyPress(e, project, input)
+    );
+
+    return input;
+};
+
 const renderProjects = () => {
     const appContainer = document.getElementById("app");
     appContainer.innerHTML = "";
@@ -198,45 +244,13 @@ const renderProjects = () => {
         const projectColumn = document.createElement("div");
         projectColumn.classList.add("project-column");
 
-        // Title
-        const title = document.createElement("h2");
-        const projectTitle = document.createElement("span");
-        projectTitle.classList.add("task-title");
-        projectTitle.innerText = project.title;
+        const header = renderProjectHeader(project);
+        const taskList = renderTasks(project.id);
+        const input = renderAddTaskInput(project);
 
-        title.append(projectTitle);
+        projectColumn.append(header, taskList, input);
 
-        // Controls
-        const controls = document.createElement("span");
-        controls.classList.add("project-controls");
-
-        const deleteBtn = document.createElement("span");
-        deleteBtn.innerText = "[X]";
-        deleteBtn.addEventListener("click", () =>
-            handleDeleteProject(project.id)
-        );
-
-        const editBtn = document.createElement("span");
-        editBtn.innerText = "[Edit]";
-        editBtn.addEventListener("click", () =>
-            handleEditProject(project, projectTitle)
-        );
-        controls.append(editBtn, deleteBtn);
-
-        title.append(controls);
-        projectColumn.append(title);
-
-        // Tasks
-        const tasks = renderTasks(project.id);
-        projectColumn.append(tasks);
         appContainer.append(projectColumn);
-
-        const addTaskInput = document.createElement("input");
-        projectColumn.append(addTaskInput);
-        addTaskInput.type = "text";
-        addTaskInput.addEventListener("keypress", (e) =>
-            handleAddTaskKeyPress(e, project, addTaskInput)
-        );
     });
 };
 
@@ -292,11 +306,13 @@ const renderTaskDueDate = (task, projectId) => {
 const renderTaskTitleContainer = (task, projectId) => {
     const titleContainer = document.createElement("span");
     titleContainer.classList.add("task-title");
-    titleContainer.append(renderTaskPriorityBar(task, projectId));
-    titleContainer.append(renderTaskStatusToggle(task));
+
+    const priorityBar = renderTaskPriorityBar(task, projectId);
+    const statusToggle = renderTaskStatusToggle(task);
     const taskTitle = renderTaskTitle(task);
-    titleContainer.append(taskTitle);
-    titleContainer.append(renderTaskDueDate(task, projectId));
+    const dueDate = renderTaskDueDate(task, projectId);
+
+    titleContainer.append(priorityBar, statusToggle, taskTitle, dueDate);
 
     return { titleContainer, taskTitle };
 };
@@ -312,6 +328,7 @@ const renderTaskControls = (task, taskTitle) => {
     const editBtn = document.createElement("span");
     editBtn.innerText = "[Edit]";
     editBtn.addEventListener("click", () => handleEditTask(task, taskTitle));
+
     controls.append(editBtn, deleteBtn);
 
     return controls;
@@ -322,13 +339,14 @@ const renderTask = (task, projectId) => {
 
     taskContainer.classList.add(`priority-${task.priority}`);
     taskContainer.classList.add(`status-${task.status}`);
-    
+
     const { titleContainer, taskTitle } = renderTaskTitleContainer(
         task,
         projectId
     );
-    taskContainer.append(titleContainer);
-    taskContainer.append(renderTaskControls(task, taskTitle));
+    const taskControls = renderTaskControls(task, taskTitle);
+
+    taskContainer.append(titleContainer, taskControls);
 
     return taskContainer;
 };
