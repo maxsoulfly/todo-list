@@ -12,6 +12,7 @@ import {
 
 import { saveData } from "./storage";
 
+// --- Project Handlers ---
 const handleDeleteProject = (projectId) => {
     deleteProject(projectId);
     saveData({
@@ -53,6 +54,44 @@ const handleEditProjectKeyDown = (e, project, editTitleInput) => {
     }
 };
 
+const handleAddProjectKeyDown = (e, addProjectInput, addProjectBtn) => {
+    if (e.key === "Enter") {
+        if (!addProjectInput.value || addProjectInput.value.trim() === "") {
+            addProjectInput.replaceWith(addProjectBtn);
+            return;
+        }
+
+        const newProject = createProject(addProjectInput.value);
+        addProject(newProject);
+        saveData({ projects: getAllProjects(), tasks: getAllTasks() });
+
+        renderProjects();
+
+        addProjectInput.replaceWith(addProjectBtn);
+    }
+
+    if (e.key === "Escape") {
+        renderProjects(); // cancel add
+
+        addProjectInput.replaceWith(addProjectBtn);
+    }
+};
+
+const setupAddProjectButton = () => {
+    const addProjectBtn = document.getElementById("add-project-btn");
+    addProjectBtn.addEventListener("click", () => {
+        const addProjectInput = document.createElement("input");
+        addProjectInput.id = "add-project-input";
+        addProjectBtn.replaceWith(addProjectInput);
+        addProjectInput.focus();
+
+        addProjectInput.addEventListener("keydown", (e) =>
+            handleAddProjectKeyDown(e, addProjectInput, addProjectBtn)
+        );
+    });
+};
+
+// --- Task Handlers ---
 const handleAddTaskKeyPress = (e, project, addTaskInput) => {
     if (e.key !== "Enter") return;
 
@@ -113,6 +152,7 @@ const handleEditTaskKeyDown = (e, task, editTitleInput) => {
         renderProjects(); // cancel edit
     }
 };
+
 const handlePriorityToggle = (task) => {
     const realTask = getAllTasks().find((t) => t.id === task.id);
     if (!realTask) return;
@@ -123,9 +163,7 @@ const handlePriorityToggle = (task) => {
         high: null,
     };
 
-    // console.log("Before:", realTask.priority);
     task.priority = nextPriority[task.priority];
-    // console.log("After:", realTask.priority);
 
     saveData({
         projects: getAllProjects(),
@@ -133,6 +171,7 @@ const handlePriorityToggle = (task) => {
     });
     renderProjects();
 };
+
 const handleStatusToggle = (task) => {
     const realTask = getAllTasks().find((t) => t.id === task.id);
     if (!realTask) return;
@@ -148,6 +187,7 @@ const handleStatusToggle = (task) => {
 
     renderProjects();
 };
+
 const handleDueDateEdit = (task) => {
     const realTask = getAllTasks().find((t) => t.id === task.id);
     if (!realTask) return;
@@ -178,17 +218,8 @@ const handleDueDateEdit = (task) => {
         renderProjects();
     }
 };
-const formatDate = (isoDate) => {
-    const options = { month: "short", day: "numeric" }; // e.g. Jun 26
-    return new Date(isoDate).toLocaleDateString(undefined, options);
-};
 
-const renderStatus = (task) => {
-    if (task.status === "todo") return "[ ]";
-    if (task.status === "in-progress") return "[-]";
-    if (task.status === "done") return "[v]";
-};
-
+// --- Project Render Functions ---
 const renderProjectTitle = (project) => {
     const projectTitle = document.createElement("span");
     projectTitle.classList.add("task-title");
@@ -235,25 +266,31 @@ const renderAddTaskInput = (project) => {
     return input;
 };
 
+const renderProject = (project) => {
+    const projectColumn = document.createElement("div");
+    projectColumn.classList.add("project-column");
+
+    const header = renderProjectHeader(project);
+    const taskList = renderTasks(project.id);
+    const input = renderAddTaskInput(project);
+
+    projectColumn.append(header, taskList, input);
+
+    return projectColumn;
+};
+
 const renderProjects = () => {
     const appContainer = document.getElementById("app");
     appContainer.innerHTML = "";
 
     const projects = getAllProjects();
     projects.forEach((project) => {
-        const projectColumn = document.createElement("div");
-        projectColumn.classList.add("project-column");
-
-        const header = renderProjectHeader(project);
-        const taskList = renderTasks(project.id);
-        const input = renderAddTaskInput(project);
-
-        projectColumn.append(header, taskList, input);
-
+        const projectColumn = renderProject(project);
         appContainer.append(projectColumn);
     });
 };
 
+// --- Task Render Functions ---
 const renderTaskPriorityBar = (task, projectId) => {
     const priorityBar = document.createElement("span");
     priorityBar.classList.add("priority-bar", `priority-${task.priority}`);
@@ -363,41 +400,16 @@ const renderTasks = (projectId) => {
     return taskList;
 };
 
-const handleAddProjectKeyDown = (e, addProjectInput, addProjectBtn) => {
-    if (e.key === "Enter") {
-        if (!addProjectInput.value || addProjectInput.value.trim() === "") {
-            addProjectInput.replaceWith(addProjectBtn);
-            return;
-        }
-
-        const newProject = createProject(addProjectInput.value);
-        addProject(newProject);
-        saveData({ projects: getAllProjects(), tasks: getAllTasks() });
-
-        renderProjects();
-
-        addProjectInput.replaceWith(addProjectBtn);
-    }
-
-    if (e.key === "Escape") {
-        renderProjects(); // cancel add
-
-        addProjectInput.replaceWith(addProjectBtn);
-    }
+// --- Utility/Helper Functions ---
+const formatDate = (isoDate) => {
+    const options = { month: "short", day: "numeric" }; // e.g. Jun 26
+    return new Date(isoDate).toLocaleDateString(undefined, options);
 };
 
-const setupAddProjectButton = () => {
-    const addProjectBtn = document.getElementById("add-project-btn");
-    addProjectBtn.addEventListener("click", () => {
-        const addProjectInput = document.createElement("input");
-        addProjectInput.id = "add-project-input";
-        addProjectBtn.replaceWith(addProjectInput);
-        addProjectInput.focus();
-
-        addProjectInput.addEventListener("keydown", (e) =>
-            handleAddProjectKeyDown(e, addProjectInput, addProjectBtn)
-        );
-    });
+const renderStatus = (task) => {
+    if (task.status === "todo") return "[ ]";
+    if (task.status === "in-progress") return "[-]";
+    if (task.status === "done") return "[v]";
 };
 
 export { renderProjects, renderTasks, setupAddProjectButton };
