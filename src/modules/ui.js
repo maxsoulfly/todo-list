@@ -137,13 +137,9 @@ const handleStatusToggle = (task) => {
     const realTask = getAllTasks().find((t) => t.id === task.id);
     if (!realTask) return;
 
-    console.log("Before:", realTask.status);
-
     if (realTask.status === "todo") realTask.status = "in-progress";
     else if (realTask.status === "in-progress") realTask.status = "done";
     else if (realTask.status === "done") realTask.status = "todo";
-
-    console.log("After:", realTask.status);
 
     saveData({
         projects: getAllProjects(),
@@ -151,6 +147,36 @@ const handleStatusToggle = (task) => {
     });
 
     renderProjects();
+};
+const handleDueDateEdit = (task) => {
+    const realTask = getAllTasks().find((t) => t.id === task.id);
+    if (!realTask) return;
+
+    const dateInput = document.createElement("input");
+    dateInput.type = "date";
+    dateInput.value = task.dueDate ? task.dueDate.split("T")[0] : ""; // ISO short
+    dateInput.classList.add("due-date-input");
+
+    const oldBadge = document.querySelector(
+        `.due-date-badge[data-task-id="${task.id}"]`
+    );
+    oldBadge.replaceWith(dateInput);
+    dateInput.focus();
+
+    dateInput.addEventListener("blur", () => saveDate());
+    dateInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") saveDate();
+        if (e.key === "Escape") dateInput.replaceWith(oldBadge); // optional cancel
+    });
+
+    function saveDate() {
+        task.dueDate = dateInput.value || null;
+        saveData({
+            projects: getAllProjects(),
+            tasks: getAllTasks(),
+        });
+        renderProjects();
+    }
 };
 const formatDate = (isoDate) => {
     const options = { month: "short", day: "numeric" }; // e.g. Jun 26
@@ -220,9 +246,11 @@ const renderTasks = (projectId) => {
         const taskContainer = document.createElement("p");
         taskContainer.classList.add(`priority-${task.priority}`);
 
+        // title container
         const title = document.createElement("span");
         title.classList.add("task-title");
 
+        // priority bar
         const priorityBar = document.createElement("span");
         priorityBar.classList.add("priority-bar", `priority-${task.priority}`);
         priorityBar.addEventListener("click", () => handlePriorityToggle(task));
@@ -231,6 +259,7 @@ const renderTasks = (projectId) => {
         priorityBar.title = `[Priority: ${task.priority}] - Click to toggle priority`;
         title.append(priorityBar);
 
+        // status toggle
         const statusToggle = document.createElement("span");
         statusToggle.classList.add("status-toggle");
         statusToggle.innerText = renderStatus(task);
@@ -238,6 +267,7 @@ const renderTasks = (projectId) => {
         title.append(statusToggle);
         taskContainer.classList.add(`status-${task.status}`);
 
+        // title
         const taskTitle = document.createElement("span");
         taskTitle.classList.add("task-title-text");
         taskTitle.innerText = task.title;
@@ -245,22 +275,29 @@ const renderTasks = (projectId) => {
 
         taskContainer.append(title);
 
+        // Due date
         const dueDate = document.createElement("span");
         dueDate.classList.add("due-date");
         dueDate.classList.add("due-date-badge");
+        dueDate.dataset.taskId = task.id;
+        dueDate.dataset.projectId = projectId;
         dueDate.title = task.dueDate
             ? `Due: ${formatDate(task.dueDate)} — Click to change`
             : "Click to set due date";
-
         dueDate.textContent = task.dueDate
             ? formatDate(task.dueDate)
             : "No due date";
+        dueDate.addEventListener("click", () => {
+            handleDueDateEdit(task);
+        });
 
         title.append(dueDate);
+
         if (!task.dueDate) {
             dueDate.dataset.empty = "true";
         }
 
+        // controlls
         const controls = document.createElement("span");
         controls.classList.add("task-controls");
 
@@ -275,7 +312,6 @@ const renderTasks = (projectId) => {
         );
 
         controls.append(editBtn, deleteBtn);
-
         taskContainer.append(controls);
 
         taskList.append(taskContainer);
