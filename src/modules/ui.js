@@ -317,26 +317,29 @@ const renderTaskControls = (task, taskTitle) => {
     return controls;
 };
 
+const renderTask = (task, projectId) => {
+    const taskContainer = document.createElement("p");
+
+    taskContainer.classList.add(`priority-${task.priority}`);
+    taskContainer.classList.add(`status-${task.status}`);
+    
+    const { titleContainer, taskTitle } = renderTaskTitleContainer(
+        task,
+        projectId
+    );
+    taskContainer.append(titleContainer);
+    taskContainer.append(renderTaskControls(task, taskTitle));
+
+    return taskContainer;
+};
+
 const renderTasks = (projectId) => {
     const taskList = document.createElement("div");
     taskList.classList.add("task-list");
 
     const tasks = getTasksForProject(projectId);
     tasks.forEach((task) => {
-        const taskContainer = document.createElement("p");
-
-        taskContainer.classList.add(`priority-${task.priority}`);
-        taskContainer.classList.add(`status-${task.status}`);
-
-        const { titleContainer, taskTitle } = renderTaskTitleContainer(
-            task,
-            projectId
-        );
-        taskContainer.append(titleContainer);
-        
-        taskContainer.append(renderTaskControls(task, taskTitle));
-
-        taskList.append(taskContainer);
+        taskList.append(renderTask(task, projectId));
     });
 
     return taskList;
