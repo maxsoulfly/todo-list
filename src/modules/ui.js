@@ -220,77 +220,101 @@ const handleDueDateEdit = (task) => {
 };
 
 const addTaskDraggability = (taskContainer, task, projectId) => {
-    // Add draggable tasks - TODO: move to a addTaskDraggability
     taskContainer.setAttribute("draggable", "true");
     taskContainer.dataset.taskId = task.id;
+    taskContainer.dataset.projectId = projectId;
 
-    taskContainer.addEventListener("dragstart", (e) => {
-        e.dataTransfer.setData("text/plain", task.id);
-        taskContainer.classList.add("dragging");
-    });
-    taskContainer.addEventListener("dragend", () => {
-        taskContainer.classList.remove("dragging");
-    });
-    taskContainer.addEventListener("dragover", (e) => {
-        e.preventDefault();
-
-        const bounding = taskContainer.getBoundingClientRect();
-        const offset = e.clientY - bounding.top;
-
-        taskContainer.classList.remove("drag-over-above", "drag-over-below");
-
-        if (offset < bounding.height / 2) {
-            taskContainer.classList.add("drag-over-above");
-        } else {
-            taskContainer.classList.add("drag-over-below");
-        }
-    });
-    taskContainer.addEventListener("dragleave", (e) => {
-        taskContainer.classList.remove("drag-over-above", "drag-over-below");
-    });
-    taskContainer.addEventListener("drop", (e) => {
-        const draggedTaskId = e.dataTransfer.getData("text/plain");
-        const targetTaskId = e.currentTarget.dataset.taskId;
-        const isBelow = taskContainer.classList.contains("drag-over-below");
-        handleTaskReorder(draggedTaskId, targetTaskId, projectId, isBelow);
-        taskContainer.classList.remove("drag-over-above", "drag-over-below");
-
-        console.log("DROP", draggedTaskId, targetTaskId);
-    });
-    // Draggable end
+    taskContainer.addEventListener("dragstart", (e) =>
+        startDrag(e, task, projectId)
+    );
+    taskContainer.addEventListener("dragend", clearDragStyles);
+    taskContainer.addEventListener("dragover", applyDragPositionClass);
+    taskContainer.addEventListener("dragleave", clearDragStyles);
+    taskContainer.addEventListener("drop", (e) => handleDrop(e, taskContainer));
 };
 
-const handleTaskReorder = (draggedTaskId, targetTaskId, projectId, isBelow) => {
+const startDrag = (e, task, projectId) => {
+    e.dataTransfer.setData(
+        "text/plain",
+        JSON.stringify({
+            taskId: task.id,
+            fromProjectId: projectId,
+        })
+    );
+    e.currentTarget.classList.add("dragging");
+};
+
+const clearDragStyles = (e) => {
+    e.currentTarget.classList.remove(
+        "dragging",
+        "drag-over-above",
+        "drag-over-below"
+    );
+};
+
+const applyDragPositionClass = (e) => {
+    e.preventDefault();
+    const el = e.currentTarget;
+    const offset = e.clientY - el.getBoundingClientRect().top;
+    el.classList.remove("drag-over-above", "drag-over-below");
+    el.classList.add(
+        offset < el.offsetHeight / 2 ? "drag-over-above" : "drag-over-below"
+    );
+};
+
+const handleDrop = (e, taskContainer) => {
+    const { taskId, fromProjectId } = JSON.parse(
+        e.dataTransfer.getData("text/plain")
+    );
+    const toProjectId = taskContainer.dataset.projectId;
+    const targetTaskId = taskContainer.dataset.taskId;
+    const isBelow = taskContainer.classList.contains("drag-over-below");
+
+    handleTaskReorder(
+        taskId,
+        targetTaskId,
+        toProjectId,
+        isBelow,
+        fromProjectId
+    );
+    clearDragStyles(e);
+};
+
+const handleTaskReorder = (
+    draggedId,
+    targetId,
+    toProjectId,
+    isBelow,
+    fromProjectId
+) => {
     const allTasks = getAllTasks();
+    const dragged = allTasks.find((t) => t.id === draggedId);
+    if (!dragged) return;
 
-    // 🔥 Use reference-filtered list, not copied one
-    const projectTasks = allTasks.filter((t) => t.projectId === projectId);
+    // Reassign project if necessary
+    if (dragged.projectId !== toProjectId) {
+        dragged.projectId = toProjectId;
+    }
 
-    console.log(projectTasks.map((t) => t.title));
+    const projectTasks = allTasks
+        .filter((t) => t.projectId === toProjectId)
+        .sort((a, b) => a.order - b.order);
 
-    projectTasks.sort((a, b) => a.order - b.order);
+    // Remove if already in target list
+    const existingIndex = projectTasks.indexOf(dragged);
+    if (existingIndex !== -1) projectTasks.splice(existingIndex, 1);
 
-    console.log(projectTasks.map((t) => t.title));
-
-    const dragged = projectTasks.find((task) => task.id === draggedTaskId);
-    const target = projectTasks.find((task) => task.id === targetTaskId);
-
-    const draggedIndex = projectTasks.indexOf(dragged);
-    projectTasks.splice(draggedIndex, 1);
-
+    const target = projectTasks.find((t) => t.id === targetId);
     const targetIndex = projectTasks.indexOf(target);
     const insertIndex = targetIndex + (isBelow ? 1 : 0);
+
     projectTasks.splice(insertIndex, 0, dragged);
 
-    projectTasks.forEach((task, index) => {
-        task.order = index;
-    });
-
-    console.log(allTasks);
+    projectTasks.forEach((t, i) => (t.order = i));
 
     saveData({
         projects: getAllProjects(),
-        tasks: allTasks, // ← this now includes reordered projectTasks
+        tasks: allTasks,
     });
 
     renderProjects();
