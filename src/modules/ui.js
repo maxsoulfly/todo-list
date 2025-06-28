@@ -219,6 +219,47 @@ const handleDueDateEdit = (task) => {
     }
 };
 
+const addTaskDraggability = (taskContainer, task, projectId) => {
+    // Add draggable tasks - TODO: move to a addTaskDraggability
+    taskContainer.setAttribute("draggable", "true");
+    taskContainer.dataset.taskId = task.id;
+
+    taskContainer.addEventListener("dragstart", (e) => {
+        e.dataTransfer.setData("text/plain", task.id);
+        taskContainer.classList.add("dragging");
+    });
+    taskContainer.addEventListener("dragend", () => {
+        taskContainer.classList.remove("dragging");
+    });
+    taskContainer.addEventListener("dragover", (e) => {
+        e.preventDefault();
+
+        const bounding = taskContainer.getBoundingClientRect();
+        const offset = e.clientY - bounding.top;
+
+        taskContainer.classList.remove("drag-over-above", "drag-over-below");
+
+        if (offset < bounding.height / 2) {
+            taskContainer.classList.add("drag-over-above");
+        } else {
+            taskContainer.classList.add("drag-over-below");
+        }
+    });
+    taskContainer.addEventListener("dragleave", (e) => {
+        taskContainer.classList.remove("drag-over-above", "drag-over-below");
+    });
+    taskContainer.addEventListener("drop", (e) => {
+        const draggedTaskId = e.dataTransfer.getData("text/plain");
+        const targetTaskId = e.currentTarget.dataset.taskId;
+        const isBelow = taskContainer.classList.contains("drag-over-below");
+        handleTaskReorder(draggedTaskId, targetTaskId, projectId, isBelow);
+        taskContainer.classList.remove("drag-over-above", "drag-over-below");
+
+        console.log("DROP", draggedTaskId, targetTaskId);
+    });
+    // Draggable end
+};
+
 const handleTaskReorder = (draggedTaskId, targetTaskId, projectId, isBelow) => {
     const allTasks = getAllTasks();
 
@@ -413,44 +454,7 @@ const renderTask = (task, projectId) => {
     taskContainer.classList.add(`priority-${task.priority}`);
     taskContainer.classList.add(`status-${task.status}`);
 
-    // Add draggable tasks - TODO: move to a addTaskDraggability
-    taskContainer.setAttribute("draggable", "true");
-    taskContainer.dataset.taskId = task.id;
-
-    taskContainer.addEventListener("dragstart", (e) => {
-        e.dataTransfer.setData("text/plain", task.id);
-        taskContainer.classList.add("dragging");
-    });
-    taskContainer.addEventListener("dragend", () => {
-        taskContainer.classList.remove("dragging");
-    });
-    taskContainer.addEventListener("dragover", (e) => {
-        e.preventDefault();
-
-        const bounding = taskContainer.getBoundingClientRect();
-        const offset = e.clientY - bounding.top;
-
-        taskContainer.classList.remove("drag-over-above", "drag-over-below");
-
-        if (offset < bounding.height / 2) {
-            taskContainer.classList.add("drag-over-above");
-        } else {
-            taskContainer.classList.add("drag-over-below");
-        }
-    });
-    taskContainer.addEventListener("dragleave", (e) => {
-        taskContainer.classList.remove("drag-over-above", "drag-over-below");
-    });
-    taskContainer.addEventListener("drop", (e) => {
-        const draggedTaskId = e.dataTransfer.getData("text/plain");
-        const targetTaskId = e.currentTarget.dataset.taskId;
-        const isBelow = taskContainer.classList.contains("drag-over-below");
-        handleTaskReorder(draggedTaskId, targetTaskId, projectId, isBelow);
-        taskContainer.classList.remove("drag-over-above", "drag-over-below");
-
-        console.log("DROP", draggedTaskId, targetTaskId);
-    });
-    // Draggable end
+    addTaskDraggability(taskContainer, task, projectId);
 
     const { titleContainer, taskTitle } = renderTaskTitleContainer(
         task,
