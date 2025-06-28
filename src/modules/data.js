@@ -34,6 +34,7 @@ const createTask = ({
         checklist: [],
         status: "todo",
         dueDate: dueDate,
+        order: getTasksForProject(projectId).length,
     };
 };
 

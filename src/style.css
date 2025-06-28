@@ -18,6 +18,7 @@
 	--border-clr  : #333;
 	--input-bg    : #111;
 	--input-border: #555;
+	--accent-color: #4caf50;
 }
 
 body {
@@ -273,4 +274,20 @@ input[type="text"] {
 	color     : #aaa;
 	background: #222;
 	border    : 1px dashed #444;
+}
+
+
+.task-list .dragging {
+	opacity: 0.4;
+	border : 2px dashed #888;
+}
+
+
+
+.drag-over-above {
+	border-top: 2px solid var(--warning-clr);
+}
+
+.drag-over-below {
+	border-bottom: 2px solid var(--warning-clr);
 }
