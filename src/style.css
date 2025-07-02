@@ -292,12 +292,17 @@ input[type="text"] {
 	border-bottom: 2px solid var(--warning-clr);
 }
 
-.task-list.drag-over-empty {
+.drop-zone {
+	min-height: .5rem;
+	/* invisible but targetable */
+	border    : none;
+	transition: min-height 0.1s ease;
+
+}
+
+.drop-zone.drag-over {
 	border       : 2px dashed var(--warning-clr);
 	border-radius: 6px;
 	min-height   : 3rem;
-}
-
-.task-list:empty {
-	min-height: 2rem;
+	transition   : min-height 0.1s ease;
 }

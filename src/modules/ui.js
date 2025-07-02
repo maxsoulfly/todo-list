@@ -218,26 +218,36 @@ const handleDueDateEdit = (task) => {
         renderProjects();
     }
 };
-const addEmptyDropTarget = (taskList, projectId) => {
-    taskList.dataset.projectId = projectId;
 
-    taskList.addEventListener("dragover", (e) => {
+const renderDropZone = (projectId, targetTaskId, isBelow) => {
+    const dropZone = document.createElement("div");
+    dropZone.classList.add("drop-zone");
+
+    dropZone.addEventListener("dragover", (e) => {
         e.preventDefault();
-        taskList.classList.add("drag-over-empty");
+        dropZone.classList.add("drag-over");
+    });
+    dropZone.addEventListener("dragleave", (e) => {
+        e.preventDefault();
+        dropZone.classList.remove("drag-over");
     });
 
-    taskList.addEventListener("dragleave", () => {
-        taskList.classList.remove("drag-over-empty");
-    });
-
-    taskList.addEventListener("drop", (e) => {
+    dropZone.addEventListener("drop", (e) => {
         const { taskId, fromProjectId } = JSON.parse(
             e.dataTransfer.getData("text/plain")
         );
 
-        handleTaskReorder(taskId, null, projectId, false, fromProjectId);
-        taskList.classList.remove("drag-over-empty");
+        handleTaskReorder(
+            taskId,
+            targetTaskId,
+            projectId,
+            isBelow,
+            fromProjectId
+        );
+        dropZone.classList.remove("drag-over");
     });
+
+    return dropZone;
 };
 
 const addTaskDraggability = (taskContainer, task, projectId) => {
@@ -516,15 +526,22 @@ const renderTasks = (projectId) => {
     const taskList = document.createElement("div");
     taskList.classList.add("task-list");
 
-    addEmptyDropTarget(taskList, projectId);
-
     const tasks = getTasksForProject(projectId).sort(
         (a, b) => a.order - b.order
     );
 
-    tasks.forEach((task) => {
-        taskList.append(renderTask(task, projectId));
-    });
+    if (tasks.length === 0) {
+        taskList.append(renderDropZone(projectId, null, true));
+    } else {
+        taskList.append(renderDropZone(projectId, tasks[0].id, false));
+
+        tasks.forEach((task) => {
+            const renderedTask = renderTask(task, projectId);
+            const dropZone = renderDropZone(projectId, task.id, true);
+
+            taskList.append(renderedTask, dropZone);
+        });
+    }
 
     return taskList;
 };
