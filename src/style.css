@@ -56,7 +56,7 @@ body {
 .project-column {
 	display         : flex;
 	flex-direction  : column;
-	gap             : 0.5rem;
+	gap             : 0.25rem;
 	background-color: var(--column-bg);
 	padding         : 1rem 1rem 2rem 1rem;
 
@@ -86,7 +86,7 @@ body {
 	align-items    : center;
 	gap            : 0.5rem;
 	font-size      : 1rem;
-	margin-bottom  : 0.25rem;
+	margin         : 0.25rem 0;
 	padding        : 0.5rem;
 	flex-wrap      : nowrap;
 	/* prevents wrapping */
@@ -284,25 +284,21 @@ input[type="text"] {
 
 
 
-.drag-over-above {
-	border-top: 2px solid var(--warning-clr);
-}
-
-.drag-over-below {
-	border-bottom: 2px solid var(--warning-clr);
-}
-
 .drop-zone {
-	min-height: .5rem;
-	/* invisible but targetable */
+	min-height: 0.25rem;
+	padding   : 0.25rem 0;
 	border    : none;
-	transition: min-height 0.1s ease;
-
+	transition: all 0.1s ease;
 }
+
 
 .drop-zone.drag-over {
-	border       : 2px dashed var(--warning-clr);
-	border-radius: 6px;
-	min-height   : 3rem;
-	transition   : min-height 0.1s ease;
+	border          : 2px dashed var(--warning-clr);
+	border-radius   : 6px;
+	min-height      : 2.5rem;
+	background-color: rgba(255, 255, 255, 0.03);
+}
+
+.task-list>.drop-zone:last-child {
+	margin-bottom: 0.2rem;
 }

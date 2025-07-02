@@ -259,9 +259,6 @@ const addTaskDraggability = (taskContainer, task, projectId) => {
         startDrag(e, task, projectId)
     );
     taskContainer.addEventListener("dragend", clearDragStyles);
-    taskContainer.addEventListener("dragover", applyDragPositionClass);
-    taskContainer.addEventListener("dragleave", clearDragStyles);
-    taskContainer.addEventListener("drop", (e) => handleDrop(e, taskContainer));
 };
 
 const startDrag = (e, task, projectId) => {
@@ -281,34 +278,6 @@ const clearDragStyles = (e) => {
         "drag-over-above",
         "drag-over-below"
     );
-};
-
-const applyDragPositionClass = (e) => {
-    e.preventDefault();
-    const el = e.currentTarget;
-    const offset = e.clientY - el.getBoundingClientRect().top;
-    el.classList.remove("drag-over-above", "drag-over-below");
-    el.classList.add(
-        offset < el.offsetHeight / 2 ? "drag-over-above" : "drag-over-below"
-    );
-};
-
-const handleDrop = (e, taskContainer) => {
-    const { taskId, fromProjectId } = JSON.parse(
-        e.dataTransfer.getData("text/plain")
-    );
-    const toProjectId = taskContainer.dataset.projectId;
-    const targetTaskId = taskContainer.dataset.taskId;
-    const isBelow = taskContainer.classList.contains("drag-over-below");
-
-    handleTaskReorder(
-        taskId,
-        targetTaskId,
-        toProjectId,
-        isBelow,
-        fromProjectId
-    );
-    clearDragStyles(e);
 };
 
 const handleTaskReorder = (
