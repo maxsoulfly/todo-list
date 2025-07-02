@@ -291,3 +291,13 @@ input[type="text"] {
 .drag-over-below {
 	border-bottom: 2px solid var(--warning-clr);
 }
+
+.task-list.drag-over-empty {
+	border       : 2px dashed var(--warning-clr);
+	border-radius: 6px;
+	min-height   : 3rem;
+}
+
+.task-list:empty {
+	min-height: 2rem;
+}

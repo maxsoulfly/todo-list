@@ -218,6 +218,27 @@ const handleDueDateEdit = (task) => {
         renderProjects();
     }
 };
+const addEmptyDropTarget = (taskList, projectId) => {
+    taskList.dataset.projectId = projectId;
+
+    taskList.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        taskList.classList.add("drag-over-empty");
+    });
+
+    taskList.addEventListener("dragleave", () => {
+        taskList.classList.remove("drag-over-empty");
+    });
+
+    taskList.addEventListener("drop", (e) => {
+        const { taskId, fromProjectId } = JSON.parse(
+            e.dataTransfer.getData("text/plain")
+        );
+
+        handleTaskReorder(taskId, null, projectId, false, fromProjectId);
+        taskList.classList.remove("drag-over-empty");
+    });
+};
 
 const addTaskDraggability = (taskContainer, task, projectId) => {
     taskContainer.setAttribute("draggable", "true");
@@ -494,6 +515,8 @@ const renderTask = (task, projectId) => {
 const renderTasks = (projectId) => {
     const taskList = document.createElement("div");
     taskList.classList.add("task-list");
+
+    addEmptyDropTarget(taskList, projectId);
 
     const tasks = getTasksForProject(projectId).sort(
         (a, b) => a.order - b.order
