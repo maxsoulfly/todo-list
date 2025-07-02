@@ -124,6 +124,7 @@ body {
 
 }
 
+
 .task-controls {
 	margin-left: auto;
 	align-self : flex-start;
@@ -193,18 +194,26 @@ body {
 }
 
 .edit-title-input {
-	flex     : 1;
-	min-width: 0;
+	display    : flex;
+	align-self : center;
+	margin-top : 0;
+	font-size  : 1rem;
+	padding    : 0.2rem 0.4rem;
+	line-height: 1.2;
 }
+
 
 input.edit-title-input,
 input[type="text"] {
-	width           : 100%;
-	margin-top      : 0.5rem;
-	padding         : 0.5rem;
 	background-color: var(--input-bg);
 	border          : 1px solid var(--input-border);
 	color           : var(--fg-clr);
+}
+
+input[type="text"] {
+	width     : 100%;
+	margin-top: 0.5rem;
+	padding   : 0.5rem;
 }
 
 .priority-bar {
