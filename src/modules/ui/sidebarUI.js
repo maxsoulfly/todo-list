@@ -30,7 +30,7 @@ const setupSidebarToggle = () => {
 
     toggleBtn.addEventListener("click", () => {
         sidebar.classList.toggle("collapsed");
-        body.classList.toggle("sidebar-collased");
+        body.classList.toggle("sidebar-collapsed");
 
         const isCollapsed = sidebar.classList.contains("collapsed");
         toggleBtn.textContent = isCollapsed ? "☰" : "«";
