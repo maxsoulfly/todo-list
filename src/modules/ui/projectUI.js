@@ -9,6 +9,7 @@ import { saveData } from "../storage.js";
 import { renderTasks, renderAddTaskInput, handleDeleteTask } from "./taskUI.js";
 import { addProjectDraggability } from "./dragUI.js";
 import { renderProjectDropZone } from "./dropzonesUI.js";
+import { renderSidebar } from "./sidebarUI.js";
 
 // --- Helper Functions ---
 const renderProjectTitle = (project) => {
@@ -65,7 +66,7 @@ const renderProjects = () => {
     const appContainer = document.getElementById("app");
     appContainer.innerHTML = "";
 
-    const projects = getAllProjects();
+    const projects = getAllProjects().filter((p) => !p.hidden);
 
     if (projects.length > 0) {
         const firstDropZone = renderProjectDropZone(projects[0].id, false);
@@ -77,6 +78,8 @@ const renderProjects = () => {
         const dropZone = renderProjectDropZone(project.id, true);
         appContainer.append(projectColumn, dropZone);
     });
+
+    renderSidebar();
 };
 
 // --- Handler Functions ---

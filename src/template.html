@@ -1,16 +1,19 @@
 <!-- src/template.html -->
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Maxx Todo List</title>
-	</head>
-	<body>
-		<div id="add-project-bar">
-			<button id="add-project-btn">[+] Add Project</button>
-		</div>
-
-		<div id="app"></div>
-	</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Maxx Todo List</title>
+    </head>
+    <body>
+        <button id="sidebar-toggle">☰</button>
+        <aside id="sidebar">
+            <div id="add-project-bar">
+                <button id="add-project-btn">[+] Add Project</button>
+            </div>
+            <ul id="project-list"></ul>
+        </aside>
+        <div id="app"></div>
+    </body>
 </html>

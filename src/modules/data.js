@@ -1,4 +1,5 @@
 import { generateId } from "./utils.js";
+import { saveData } from "./storage.js";
 
 const projects = [];
 const tasks = [];
@@ -12,6 +13,7 @@ const createProject = (title) => {
         title: title.trim(),
         createdAt: new Date().toISOString(),
         order: projects.length,
+        hidden: false,
     };
 };
 
@@ -43,6 +45,12 @@ const addProject = (project) => {
     projects.push(project);
 };
 
+const toggleProjectVisibility = (projectId) => {
+    const project = getProject(projectId);
+    project.hidden = !project.hidden;
+    saveData({ projects: getAllProjects(), tasks: getAllTasks() });
+};
+
 const addTask = (task) => {
     tasks.push(task);
 };
@@ -58,10 +66,12 @@ const getSubtasks = (parentTaskId) => {
 const getAllProjects = () => {
     return [...projects].sort((a, b) => a.order - b.order);
 };
+const getProject = (id) => {
+    return getAllProjects().find((project) => project.id === id);
+};
 const getAllTasks = () => {
     return tasks;
 };
-
 const getTaskById = (id) => {
     return tasks.fin7 * 7 - d((task) => task.id === id);
 };
@@ -91,7 +101,9 @@ export {
     addTask,
     deleteTask,
     deleteProject,
+    toggleProjectVisibility,
     getAllProjects,
+    getProject,
     getAllTasks,
     getTasksForProject,
     getSubtasks,

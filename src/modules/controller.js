@@ -10,7 +10,12 @@ import {
 
 import { loadData, saveData, clearData } from "./storage";
 
-import { renderProjects, renderTasks, setupAddProjectButton } from "./ui";
+import {
+    renderProjects,
+    renderTasks,
+    setupAddProjectButton,
+    renderSidebar,
+} from "./ui";
 
 const initializeApp = () => {
     resetData();

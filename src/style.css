@@ -26,16 +26,19 @@ body {
 	background-color: var(--bg-clr);
 	color           : var(--fg-clr);
 	margin          : 0;
-	padding         : 1rem;
 	display         : flex;
-	flex-direction  : column;
+	flex-direction  : row;
 	align-items     : flex-start;
+	min-height      : 100vh;
 }
 
 #app {
 	display   : flex;
 	overflow-x: auto;
-	gap       : 1rem;
+	gap       : .5rem;
+	flex-grow : 1;
+	padding   : 2rem;
+	transition: margin-left 0.3s ease;
 }
 
 #add-project-bar {
@@ -50,7 +53,8 @@ body {
 	border          : 1px solid var(--input-border);
 	color           : var(--fg-clr);
 	border-radius   : 6px;
-	width           : 250px;
+	width           : 100%;
+	box-sizing      : border-box;
 }
 
 .project-column {
@@ -160,6 +164,7 @@ body {
 .status-todo .task-title-text,
 .status-in-progress .task-title-text,
 .status-done .task-title-text {
+
 	display       : inline-block;
 	max-width     : 12rem;
 	overflow-wrap : break-word;
@@ -170,18 +175,16 @@ body {
 
 .status-todo .task-title-text {
 	color  : var(--todo-clr);
-	opacity: 0.8;
+	opacity: 0.7;
 }
 
 .status-in-progress .task-title-text {
-	color     : var(--in-progress-clr);
 	font-style: italic;
 }
 
 .status-done .task-title-text {
-	color          : var(--done-clr);
 	text-decoration: line-through;
-	opacity        : 0.6;
+	opacity        : 0.2;
 }
 
 
@@ -333,4 +336,77 @@ input[type="text"] {
 
 .project-title {
 	cursor: move;
+}
+
+/* Sidebar stays on the left */
+#sidebar {
+
+	display       : flex;
+	flex-direction: column;
+	width         : 220px;
+	background    : var(--column-bg);
+	color         : var(--fg-clr);
+	padding       : 1rem;
+	box-sizing    : border-box;
+	transition    : width 0.3s ease, padding 0.3s ease;
+	margin        : 0;
+	gap           : 0;
+	min-height    : 100vh;
+}
+
+#sidebar-toggle {
+	position     : fixed;
+	top          : 1rem;
+	left         : 1rem;
+	z-index      : 100;
+	background   : var(--column-bg);
+	color        : var(--fg-clr);
+	border       : 1px solid var(--border-clr);
+	padding      : 0.25rem 0.5rem;
+	border-radius: 4px;
+	cursor       : pointer;
+}
+
+#project-list {
+	flex-grow : 1;
+	/* take up all space above the button */
+	overflow-y: auto;
+	margin    : 0;
+	padding   : 0;
+	list-style: none;
+}
+
+.project-hidden {
+	opacity           : 0.2;
+	/* text-decoration: line-through; */
+}
+
+#add-project-bar {
+	padding-top  : 2.5rem;
+	border-bottom: 1px solid var(--input-border);
+	margin-bottom: 1rem;
+}
+
+/* When collapsed, shrink sidebar width */
+#sidebar.collapsed {
+	width   : 0;
+	padding : 0;
+	overflow: hidden;
+}
+
+/* Optional: adjust layout when collapsed */
+body.sidebar-collapsed #app {
+	margin-left: 0;
+}
+
+.sidebar-project-item {
+	font-size    : large;
+	cursor       : pointer;
+	padding      : 0.5rem;
+	color        : var(--fg-clr);
+	border-radius: 4px;
+}
+
+.sidebar-project-item:hover {
+	background-color: var(--input-border);
 }
