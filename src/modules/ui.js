@@ -333,33 +333,35 @@ const renderDropZone = (projectId, targetTaskId, isBelow) => {
     });
 
     dropZone.addEventListener("drop", (e) => {
-        const data = JSON.parse(e.dataTransfer.getData("text/plain"));
-
-        if (data.draggedProjectId) {
-            const draggedProject = getAllProjects().find(
-                (p) => p.id === data.draggedProjectId
-            );
-            const draggedProjectTasks = getTasksForProject(draggedProject.id);
-
-            if (draggedProjectTasks.length === 0)
-                demoteProjectToTask(draggedProject.id, projectId);
-            else {
-                mergeProjectTasks(draggedProject.id, projectId);
-            }
-        } else {
-            handleTaskReorder(
-                data.taskId,
-                targetTaskId,
-                projectId,
-                isBelow,
-                data.fromProjectId
-            );
-        }
-
+        handleTaskOrProjectDrop(e, projectId, targetTaskId, isBelow);
         dropZone.classList.remove("drag-over");
     });
 
     return dropZone;
+};
+const handleTaskOrProjectDrop = (e, projectId, targetTaskId, isBelow) => {
+    const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+
+    if (data.draggedProjectId) {
+        const draggedProject = getAllProjects().find(
+            (p) => p.id === data.draggedProjectId
+        );
+        const draggedProjectTasks = getTasksForProject(draggedProject.id);
+
+        if (draggedProjectTasks.length === 0)
+            demoteProjectToTask(draggedProject.id, projectId);
+        else {
+            mergeProjectTasks(draggedProject.id, projectId);
+        }
+    } else {
+        handleTaskReorder(
+            data.taskId,
+            targetTaskId,
+            projectId,
+            isBelow,
+            data.fromProjectId
+        );
+    }
 };
 const mergeProjectTasks = (sourceProjectId, targetProjectId) => {
     const tasksToMove = getTasksForProject(sourceProjectId);
