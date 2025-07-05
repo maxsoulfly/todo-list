@@ -83,15 +83,34 @@ const renderProjectDropZone = (projectId, isAfter) => {
     });
 
     dropZone.addEventListener("drop", (e) => {
-        const { draggedProjectId } = JSON.parse(
-            e.dataTransfer.getData("text/plain")
-        );
+        const data = JSON.parse(e.dataTransfer.getData("text/plain"));
 
-        handleProjectReorder(draggedProjectId, projectId, isAfter);
+        if (data.taskId) createProjectFromTask(data.taskId);
+
+        if (data.draggedProjectId)
+            handleProjectReorder(data.draggedProjectId, projectId, isAfter);
+
         dropZone.classList.remove("drag-over");
     });
 
     return dropZone;
+};
+
+const createProjectFromTask = (taskId) => {
+    const task = getAllTasks().find((t) => t.id === taskId);
+
+    const newProject = createProject(task.title);
+    addProject(newProject);
+
+    task.projectId = newProject.id;
+
+    handleDeleteTask(taskId);
+    
+    saveData({
+        projects: getAllProjects(),
+        tasks: getAllTasks(),
+    });
+    renderProjects();
 };
 
 const handleDeleteProject = (projectId) => {
