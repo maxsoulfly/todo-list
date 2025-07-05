@@ -13,6 +13,87 @@ import {
 import { saveData } from "./storage";
 
 // --- Project Handlers ---
+
+const handleProjectReorder = (draggedId, targetId, isAfter) => {
+    const allProjects = getAllProjects();
+    const dragged = allProjects.find((p) => p.id === draggedId);
+    if (!dragged) return;
+
+    // Remove if already in target list
+    const existingIndex = allProjects.indexOf(dragged);
+    if (existingIndex !== -1) allProjects.splice(existingIndex, 1);
+
+    const targetIndex = allProjects.findIndex((p) => p.id === targetId);
+
+    const insertIndex = targetIndex + (isAfter ? 1 : 0);
+
+    allProjects.splice(insertIndex, 0, dragged);
+
+    allProjects.forEach((t, i) => (t.order = i));
+    console.log("Reordering:", draggedId, "→", targetId, "after?", isAfter);
+
+    saveData({
+        projects: allProjects,
+        tasks: getAllTasks(),
+    });
+
+    renderProjects();
+};
+
+const addProjectDraggability = (projectColumn, project) => {
+    projectColumn.setAttribute("draggable", "true");
+    projectColumn.dataset.projectId = project.id;
+
+    // dragstart
+    projectColumn.addEventListener("dragstart", (e) => {
+        if (e.target.closest(".task")) {
+            e.preventDefault(); // 👈 this stops project drag completely
+            return;
+        }
+
+        startProjectDrag(e, project.id);
+    });
+
+    // dragleave
+    projectColumn.addEventListener("dragleave", (e) => {});
+    // drop
+    projectColumn.addEventListener("drop", (e) => {});
+};
+
+const startProjectDrag = (e, projectId) => {
+    e.dataTransfer.setData(
+        "text/plain",
+        JSON.stringify({
+            draggedProjectId: projectId,
+        })
+    );
+};
+
+const renderProjectDropZone = (projectId, isAfter) => {
+    const dropZone = document.createElement("div");
+    dropZone.classList.add("project-drop-zone");
+
+    dropZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZone.classList.add("drag-over");
+    });
+    dropZone.addEventListener("dragleave", (e) => {
+        e.preventDefault();
+        dropZone.classList.remove("drag-over");
+    });
+
+    dropZone.addEventListener("drop", (e) => {
+        const { draggedProjectId } = JSON.parse(
+            e.dataTransfer.getData("text/plain")
+        );
+
+        handleProjectReorder(draggedProjectId, projectId, isAfter);
+        dropZone.classList.remove("drag-over");
+    });
+
+    return dropZone;
+};
+
 const handleDeleteProject = (projectId) => {
     deleteProject(projectId);
     saveData({
@@ -323,7 +404,7 @@ const handleTaskReorder = (
 // --- Project Render Functions ---
 const renderProjectTitle = (project) => {
     const projectTitle = document.createElement("span");
-    projectTitle.classList.add("task-title");
+    projectTitle.classList.add("project-title");
     projectTitle.innerText = project.title;
     return projectTitle;
 };
@@ -372,6 +453,7 @@ const renderProject = (project) => {
     projectColumn.classList.add("project-column");
 
     const header = renderProjectHeader(project);
+    addProjectDraggability(header, project);
     const taskList = renderTasks(project.id);
     const input = renderAddTaskInput(project);
 
@@ -385,9 +467,16 @@ const renderProjects = () => {
     appContainer.innerHTML = "";
 
     const projects = getAllProjects();
+
+    if (projects.length > 0) {
+        const firstDropZone = renderProjectDropZone(projects[0].id, false);
+        appContainer.append(firstDropZone);
+    }
+
     projects.forEach((project) => {
         const projectColumn = renderProject(project);
-        appContainer.append(projectColumn);
+        const dropZone = renderProjectDropZone(project.id, true);
+        appContainer.append(projectColumn, dropZone);
     });
 };
 
@@ -477,6 +566,7 @@ const renderTask = (task, projectId) => {
 
     taskContainer.classList.add(`priority-${task.priority}`);
     taskContainer.classList.add(`status-${task.status}`);
+    taskContainer.classList.add("task");
 
     addTaskDraggability(taskContainer, task, projectId);
 

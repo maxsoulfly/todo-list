@@ -11,6 +11,7 @@ const createProject = (title) => {
         id: generateId(),
         title: title.trim(),
         createdAt: new Date().toISOString(),
+        order: projects.length,
     };
 };
 
@@ -55,7 +56,7 @@ const getSubtasks = (parentTaskId) => {
 };
 
 const getAllProjects = () => {
-    return projects;
+    return [...projects].sort((a, b) => a.order - b.order);
 };
 const getAllTasks = () => {
     return tasks;
