@@ -15,6 +15,7 @@ import {
     renderTasks,
     setupAddProjectButton,
     renderSidebar,
+    setupSidebarToggle,
 } from "./ui";
 
 const initializeApp = () => {
@@ -33,6 +34,7 @@ const initializeApp = () => {
     setupAddProjectButton();
     renderProjects();
     renderTasks();
+    setupSidebarToggle();
 };
 
 export { initializeApp };

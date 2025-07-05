@@ -23,4 +23,18 @@ const renderSidebar = () => {
     });
 };
 
-export { renderSidebar };
+const setupSidebarToggle = () => {
+    const toggleBtn = document.getElementById("sidebar-toggle");
+    const sidebar = document.getElementById("sidebar");
+    const body = document.body;
+
+    toggleBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("collapsed");
+        body.classList.toggle("sidebar-collased");
+
+        const isCollapsed = sidebar.classList.contains("collapsed");
+        toggleBtn.textContent = isCollapsed ? "☰" : "«";
+    });
+};
+
+export { renderSidebar, setupSidebarToggle };
