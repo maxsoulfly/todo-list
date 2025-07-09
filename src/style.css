@@ -24,6 +24,29 @@
 	--input-border: hsl(from var(--bg-clr) h s calc(l + 30%));
 }
 
+body[data-theme="light"] {
+	--accent-color: hsl(122 39% 40%);
+	--success-clr : var(--accent-color);
+	--danger-clr  : hsl(0, 70%, 50%);
+	--warning-clr : hsl(43 100% 50%);
+
+	--todo-clr       : hsl(0, 0%, 11%);
+	--in-progress-clr: hsl(33 100% 40%);
+	--done-clr       : hsl(from var(--accent-color) h s calc(l - 20%));
+
+	--priority-null-clr  : hsl(0 0% 65%);
+	--priority-low-clr   : var(--accent-color);
+	--priority-medium-clr: hsl(from var(--warning-clr) h s l);
+	--priority-high-clr  : hsl(from var(--danger-clr) h s l);
+
+	--bg-clr      : hsl(0 0% 98%);
+	--fg-clr      : hsl(0 0% 10%);
+	--column-bg   : hsl(from var(--bg-clr) h s 90%);
+	--border-clr  : hsl(0 0% 80%);
+	--input-bg    : var(--bg-clr);
+	--input-border: hsl(from var(--bg-clr) h s calc(l - 30%));
+}
+
 body {
 	font-family     : monospace;
 	background-color: var(--bg-clr);
@@ -35,6 +58,18 @@ body {
 	min-height      : 100vh;
 }
 
+
+button {
+	background-color: var(--column-bg);
+	color           : var(--fg-clr);
+	border          : 1px solid var(--border-clr);
+	padding         : 0.5rem 1rem;
+	font-family     : monospace;
+	font-size       : 1rem;
+	cursor          : pointer;
+	border-radius   : 6px;
+	transition      : background-color 0.2s ease;
+}
 
 #main-container {
 	flex-grow : 1;
@@ -198,7 +233,7 @@ body.sidebar-collapsed #app {
 
 .status-done .task-title-text {
 	text-decoration: line-through;
-	opacity        : 0.2;
+	opacity        : 0.4;
 }
 
 
@@ -259,20 +294,12 @@ input[type="text"] {
 	border-color: var(--priority-null-clr);
 }
 
+
 #add-project-btn {
-	background-color: var(--column-bg);
-	color           : var(--fg-clr);
-	border          : 1px solid var(--border-clr);
-	padding         : 0.5rem 1rem;
-	font-family     : monospace;
-	font-size       : 1rem;
-	cursor          : pointer;
-	margin-bottom   : 1rem;
-	border-radius   : 6px;
-	transition      : background-color 0.2s ease;
-	position        : sticky;
-	top             : 1rem;
-	z-index         : 10;
+	margin-bottom: 1rem;
+	position     : sticky;
+	top          : 1rem;
+	z-index      : 10;
 }
 
 #add-project-btn:hover {
@@ -282,8 +309,8 @@ input[type="text"] {
 
 
 .due-date-badge {
-	background-color: #333;
-	color           : #999;
+	background-color: var(--priority-null-clr);
+	color           : var(--todo-clr);
 	font-size       : 0.7rem;
 	padding         : 2px 6px;
 	border-radius   : 4px;
@@ -297,9 +324,9 @@ input[type="text"] {
 }
 
 .due-date-badge[data-empty="true"]:hover {
-	color     : #aaa;
-	background: #222;
-	border    : 1px dashed #444;
+	color : var(--todo-clr);
+	border: 1px dashed var(--todo-clr);
+	;
 }
 
 
