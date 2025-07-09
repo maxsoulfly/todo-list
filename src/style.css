@@ -1,24 +1,27 @@
 :root {
-	--danger-clr : #f66e84;
-	--warning-clr: #ffc241;
-	--success-clr: #4caf50;
 
-	--todo-clr       : #CCCCCC;
-	--in-progress-clr: #FF9800;
-	--done-clr       : #A5D6A7;
+	--accent-color: hsl(122 39% 49%);
+	--success-clr : var(--accent-color);
+	--danger-clr  : hsl(0, 94%, 57%);
+	--warning-clr : hsl(43 100% 63%);
 
-	--priority-null-clr  : #444;
-	--priority-low-clr   : #4caf50;
-	--priority-medium-clr: #FFB300;
-	--priority-high-clr  : #FF5252;
 
-	--bg-clr      : #111;
-	--fg-clr      : #eee;
-	--column-bg   : #222;
-	--border-clr  : #333;
-	--input-bg    : #111;
-	--input-border: #555;
-	--accent-color: #4caf50;
+	--todo-clr       : hsl(0 0% 80%);
+	--in-progress-clr: hsl(33 100% 50%);
+	--done-clr       : hsl(from var(--accent-color) h s calc(l + 20%));
+
+	--priority-null-clr  : hsl(0 0% 27%);
+	--priority-low-clr   : var(--accent-color);
+	--priority-medium-clr: hsl(from var(--warning-clr) h s l);
+	--priority-high-clr  : hsl(from var(--danger-clr) h s l);
+
+
+	--bg-clr      : hsl(0 0% 7%);
+	--fg-clr      : hsl(0 0% 93%);
+	--column-bg   : hsl(from var(--bg-clr) h s 13%);
+	--border-clr  : hsl(0 0% 20%);
+	--input-bg    : var(--bg-clr);
+	--input-border: hsl(from var(--bg-clr) h s calc(l + 30%));
 }
 
 body {
