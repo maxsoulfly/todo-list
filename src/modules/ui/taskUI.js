@@ -1,6 +1,7 @@
 import {
     getAllProjects,
     getAllTasks,
+    getTaskById,
     getTasksForProject,
     createTask,
     addTask,
@@ -8,7 +9,7 @@ import {
     getSubtasks,
 } from "../data.js";
 import { saveData } from "../storage.js";
-import { addTaskDraggability } from "./dragUI.js";
+import { addTaskDraggability, addTaskDroppability } from "./dragUI.js";
 import { renderDropZone } from "./dropzonesUI.js";
 import { renderProjects } from "./projectUI.js";
 import { renderContextualMenu } from "./contextMenuUI.js";
@@ -294,6 +295,7 @@ const renderTask = (task, projectId) => {
     taskContainer.classList.add("task");
 
     addTaskDraggability(taskContainer, task, projectId);
+    addTaskDroppability(taskContainer, task, projectId);
 
     const { titleContainer, taskTitle } = renderTaskTitleContainer(
         task,

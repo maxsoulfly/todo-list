@@ -1,3 +1,7 @@
+import { getAllProjects, getAllTasks, getTaskById } from "../data.js";
+import { saveData } from "../storage.js";
+import { renderProjects } from "./projectUI.js";
+
 const addProjectDraggability = (projectColumn, project) => {
     projectColumn.setAttribute("draggable", "true");
     projectColumn.dataset.projectId = project.id;
@@ -35,6 +39,35 @@ const addTaskDraggability = (taskContainer, task, projectId) => {
     taskContainer.addEventListener("dragend", clearDragStyles);
 };
 
+const addTaskDroppability = (taskContainer, task, projectId) => {
+    taskContainer.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        taskContainer.classList.add("drag-over-subtarget");
+    });
+
+    taskContainer.addEventListener("dragleave", (e) => {
+        taskContainer.classList.remove("drag-over-subtarget");
+    });
+
+    taskContainer.addEventListener("drop", (e) => {
+        const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+
+        if (data.taskId && data.taskId !== task.id) {
+            const draggedTask = getTaskById(data.taskId);
+            draggedTask.parentTaskId = task.id;
+            draggedTask.projectId = projectId;
+
+            saveData({
+                projects: getAllProjects(),
+                tasks: getAllTasks(),
+            });
+
+            renderProjects();
+        }
+        taskContainer.classList.remove("drag-over-subtarget");
+    });
+};
+
 const startDrag = (e, task, projectId) => {
     e.dataTransfer.setData(
         "text/plain",
@@ -60,4 +93,5 @@ export {
     addTaskDraggability,
     startDrag,
     clearDragStyles,
+    addTaskDroppability,
 };

@@ -4,6 +4,7 @@ import {
     getTasksForProject,
     createTask,
     addTask,
+    getTaskById,
 } from "../data.js";
 import { saveData } from "../storage.js";
 import { handleTaskReorder } from "./taskUI.js";
@@ -95,7 +96,13 @@ const handleTaskDrop = (data, projectId, targetTaskId, isBelow) => {
         }
     }
 
-    handleTaskReorder(taskId, targetTaskId, projectId, isBelow, fromProjectId);
+    handleTaskReorder(
+        draggedId,
+        targetTaskId,
+        projectId,
+        isBelow,
+        fromProjectId
+    );
 };
 
 const handleTaskOrProjectDrop = (e, projectId, targetTaskId, isBelow) => {
