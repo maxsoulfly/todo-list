@@ -73,7 +73,7 @@ const getAllTasks = () => {
     return tasks;
 };
 const getTaskById = (id) => {
-    return tasks.fin7 * 7 - d((task) => task.id === id);
+    return tasks.find((task) => task.id === id);
 };
 
 const deleteProject = (id) => {
