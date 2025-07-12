@@ -8,7 +8,7 @@
 
 	--todo-clr       : hsl(0 0% 80%);
 	--in-progress-clr: hsl(33 100% 50%);
-	--done-clr       : hsl(from var(--accent-color) h s calc(l + 20%));
+	--done-clr       : hsl(from var(--accent-color) h s 70%);
 
 	--priority-null-clr  : hsl(0 0% 27%);
 	--priority-low-clr   : var(--accent-color);
@@ -17,22 +17,23 @@
 
 
 	--bg-clr      : hsl(0 0% 7%);
+	--dragging-clr: hsl(0 0% 50%);
 	--fg-clr      : hsl(0 0% 93%);
 	--column-bg   : hsl(from var(--bg-clr) h s 13%);
 	--border-clr  : hsl(0 0% 20%);
 	--input-bg    : var(--bg-clr);
-	--input-border: hsl(from var(--bg-clr) h s calc(l + 30%));
+	--input-border: hsl(from var(--bg-clr) h s 33%);
 }
 
 body[data-theme="light"] {
 	--accent-color: hsl(122 39% 40%);
 	--success-clr : var(--accent-color);
 	--danger-clr  : hsl(0, 70%, 50%);
-	--warning-clr : hsl(43 100% 50%);
+	--warning-clr : hsl(43, 100%, 50%);
 
 	--todo-clr       : hsl(0, 0%, 11%);
 	--in-progress-clr: hsl(33 100% 40%);
-	--done-clr       : hsl(from var(--accent-color) h s calc(l - 20%));
+	--done-clr       : hsl(from var(--accent-color) h s 20%);
 
 	--priority-null-clr  : hsl(0 0% 65%);
 	--priority-low-clr   : var(--accent-color);
@@ -41,10 +42,11 @@ body[data-theme="light"] {
 
 	--bg-clr      : hsl(0 0% 98%);
 	--fg-clr      : hsl(0 0% 10%);
+	--dragging-clr: hsl(0 0% 50%);
 	--column-bg   : hsl(from var(--bg-clr) h s 90%);
 	--border-clr  : hsl(0 0% 80%);
 	--input-bg    : var(--bg-clr);
-	--input-border: hsl(from var(--bg-clr) h s calc(l - 30%));
+	--input-border: hsl(from var(--bg-clr) h s 80%);
 }
 
 body {
@@ -192,7 +194,7 @@ body.sidebar-collapsed #app {
 
 .project-controls span,
 .task-controls span {
-	color      : var(--warning-clr);
+	color      : var(--in-progress-clr);
 	font-size  : 0.9rem;
 	user-select: none;
 }
@@ -324,15 +326,15 @@ input[type="text"] {
 }
 
 .due-date-badge[data-empty="true"]:hover {
-	color : var(--todo-clr);
-	border: 1px dashed var(--todo-clr);
+	color : var(--dragging-clr);
+	border: 1px dashed var(--dragging-clr);
 	;
 }
 
 
 .task-list .dragging {
 	opacity: 0.4;
-	border : 2px dashed #888;
+	border : 2px dashed var(--dragging-clr);
 }
 
 
