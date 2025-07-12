@@ -369,13 +369,13 @@ const renderTasks = (projectId) => {
     const parentTasks = allTasks.filter((task) => !task.parentTaskId);
 
     if (parentTasks.length === 0) {
-        taskList.append(renderDropZone(projectId, null, true));
+        taskList.append(renderDropZone(projectId, null, true, null));
     } else {
-        taskList.append(renderDropZone(projectId, allTasks[0].id, false));
+        taskList.append(renderDropZone(projectId, null, true, null));
 
         parentTasks.forEach((task) => {
             const taskElement = renderTask(task, projectId);
-            const parentDropZone = renderDropZone(projectId, task.id, true);
+            const parentDropZone = renderDropZone(projectId, null, true, null);
 
             taskList.append(taskElement);
 
