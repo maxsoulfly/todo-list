@@ -179,6 +179,46 @@ body.sidebar-collapsed #app {
 
 }
 
+.menu-wrapper {
+	position: relative;
+}
+
+.menu-trigger {
+	visibility: hidden;
+	cursor    : pointer;
+	padding   : 0 0.5rem;
+}
+
+.task:hover .menu-trigger {
+	visibility: visible;
+}
+
+.menu-popup {
+	position     : absolute;
+	top          : 100%;
+	right        : 0;
+	background   : var(--column-bg);
+	border       : 1px solid var(--border-clr);
+	padding      : 0.25rem 0;
+	border-radius: 4px;
+	display      : none;
+	z-index      : 20;
+}
+
+.menu-item {
+	display: block;
+	padding: 0.25rem 1rem;
+	cursor : pointer;
+}
+
+.menu-item:hover {
+	background: var(--input-border);
+}
+
+.menu-wrapper:hover .menu-popup {
+	display: block;
+}
+
 
 .task-controls {
 	margin-left: auto;

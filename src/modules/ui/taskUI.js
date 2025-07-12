@@ -267,20 +267,54 @@ const renderTaskTitleContainer = (task, projectId) => {
     return { titleContainer, taskTitle };
 };
 
+const renderContextualMenu = ({ onEdit, onAddSubtask, onDelete }) => {
+    const menuWrapper = document.createElement("div");
+    menuWrapper.classList.add("menu-wrapper");
+
+    // menu-trigger
+    const menuTrigger = document.createElement("span");
+    menuTrigger.classList.add("menu-trigger");
+    menuTrigger.innerText = "⋯";
+
+    // menu-popup
+    const menuPopup = document.createElement("div");
+    menuPopup.classList.add("menu-popup", "hidden");
+
+    const editItem = document.createElement("span");
+    editItem.classList.add("menu-item");
+    editItem.innerText = "Edit";
+
+    const addSubtaskItem = document.createElement("span");
+    addSubtaskItem.classList.add("menu-item");
+    addSubtaskItem.innerText = "Add Subtask";
+
+    const deleteItem = document.createElement("span");
+    deleteItem.classList.add("menu-item");
+    deleteItem.innerText = "Delete";
+
+    editItem.addEventListener("click", onEdit);
+    addSubtaskItem.addEventListener("click", onAddSubtask);
+    deleteItem.addEventListener("click", onDelete);
+
+    // appends
+    menuPopup.append(editItem, addSubtaskItem, deleteItem);
+    menuWrapper.append(menuTrigger, menuPopup);
+
+    return menuWrapper;
+};
+
 // Task Controls
 const renderTaskControls = (task, taskTitle) => {
     const controls = document.createElement("span");
     controls.classList.add("task-controls");
 
-    const deleteBtn = document.createElement("span");
-    deleteBtn.innerText = "[X]";
-    deleteBtn.addEventListener("click", () => handleDeleteTask(task.id));
+    const menu = renderContextualMenu({
+        onEdit: () => handleEditTask(task, taskTitle),
+        onAddSubtask: () => console.log("TODO: Add subtask"),
+        onDelete: () => handleDeleteTask(task.id),
+    });
 
-    const editBtn = document.createElement("span");
-    editBtn.innerText = "[Edit]";
-    editBtn.addEventListener("click", () => handleEditTask(task, taskTitle));
-
-    controls.append(editBtn, deleteBtn);
+    controls.append(menu);
 
     return controls;
 };
