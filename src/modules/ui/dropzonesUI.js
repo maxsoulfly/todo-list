@@ -100,7 +100,7 @@ const handleTaskDrop = (
     if (!draggedTask) return;
 
     // Drop ON a task: make it a subtask, insert at end
-    if (!isBelow && draggedId !== targetTaskId) {
+    if (draggedId !== targetTaskId) {
         draggedTask.parentTaskId = targetTaskId;
         draggedTask.projectId = projectId;
 
