@@ -42,7 +42,12 @@ const renderProjectDropZone = (projectId, isAfter) => {
     return dropZone;
 };
 
-const renderDropZone = (projectId, targetTaskId, isBelow) => {
+const renderDropZone = (
+    projectId,
+    targetTaskId,
+    isBelow,
+    parentTaskId = null
+) => {
     const dropZone = document.createElement("div");
     dropZone.classList.add("drop-zone");
 
@@ -56,7 +61,13 @@ const renderDropZone = (projectId, targetTaskId, isBelow) => {
     });
 
     dropZone.addEventListener("drop", (e) => {
-        handleTaskOrProjectDrop(e, projectId, targetTaskId, isBelow);
+        handleTaskOrProjectDrop(
+            e,
+            projectId,
+            targetTaskId,
+            isBelow,
+            parentTaskId
+        );
         dropZone.classList.remove("drag-over");
     });
 
@@ -76,42 +87,67 @@ const handleProjectDrop = (data, projectId) => {
     }
 };
 
-const handleTaskDrop = (data, projectId, targetTaskId, isBelow) => {
+const handleTaskDrop = (
+    data,
+    projectId,
+    targetTaskId,
+    isBelow,
+    parentTaskId = null
+) => {
     const { taskId: draggedId, fromProjectId } = data;
+    const draggedTask = getTaskById(draggedId);
+
+    if (!draggedTask) return;
+
+    // Drop ON a task: make it a subtask, insert at end
     if (!isBelow && draggedId !== targetTaskId) {
-        const draggedTask = getTaskById(draggedId);
-        const targetTask = getTaskById(targetTaskId);
+        draggedTask.parentTaskId = targetTaskId;
+        draggedTask.projectId = projectId;
 
-        if (draggedTask && targetTask) {
-            draggedTask.parentTaskId = targetTask.id;
-            draggedTask.projectId = projectId;
+        handleTaskReorder(
+            draggedId,
+            null, // null means insert at end
+            projectId,
+            true, // isBelow: true means after last
+            fromProjectId,
+            targetTaskId // new parent
+        );
+    } else {
+        // Drop BETWEEN: move/reorder in parent group
+        draggedTask.parentTaskId = parentTaskId;
+        draggedTask.projectId = projectId;
 
-            saveData({
-                projects: getAllProjects(),
-                tasks: getAllTasks(),
-            });
-
-            renderProjects();
-            return;
-        }
+        handleTaskReorder(
+            draggedId,
+            targetTaskId,
+            projectId,
+            isBelow,
+            fromProjectId,
+            parentTaskId
+        );
     }
 
-    handleTaskReorder(
-        draggedId,
-        targetTaskId,
-        projectId,
-        isBelow,
-        fromProjectId
-    );
+    saveData({
+        projects: getAllProjects(),
+        tasks: getAllTasks(),
+    });
+
+    renderProjects();
 };
 
-const handleTaskOrProjectDrop = (e, projectId, targetTaskId, isBelow) => {
+const handleTaskOrProjectDrop = (
+    e,
+    projectId,
+    targetTaskId,
+    isBelow,
+    parentTaskId = null
+) => {
     const data = JSON.parse(e.dataTransfer.getData("text/plain"));
 
     if (data.draggedProjectId) {
         handleProjectDrop(data, projectId);
     } else {
-        handleTaskDrop(data, projectId, targetTaskId, isBelow);
+        handleTaskDrop(data, projectId, targetTaskId, isBelow, parentTaskId);
     }
 };
 

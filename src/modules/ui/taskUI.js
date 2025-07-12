@@ -156,7 +156,8 @@ const handleTaskReorder = (
     targetId,
     toProjectId,
     isBelow,
-    fromProjectId
+    fromProjectId,
+    parentTaskId = null
 ) => {
     const allTasks = getAllTasks();
     const dragged = allTasks.find((t) => t.id === draggedId);
@@ -167,21 +168,45 @@ const handleTaskReorder = (
         dragged.projectId = toProjectId;
     }
 
-    const projectTasks = allTasks
-        .filter((t) => t.projectId === toProjectId)
+    // === Only tasks with same parentTaskId and projectId ===
+    const siblings = allTasks
+        .filter(
+            (t) =>
+                t.projectId === toProjectId && t.parentTaskId === parentTaskId
+        )
         .sort((a, b) => a.order - b.order);
 
-    // Remove if already in target list
-    const existingIndex = projectTasks.indexOf(dragged);
-    if (existingIndex !== -1) projectTasks.splice(existingIndex, 1);
+    console.log(
+        "Siblings in reorder:",
+        siblings.map((t) => t.title)
+    );
+    console.log(
+        "Dragged task:",
+        dragged.title,
+        "New parentTaskId:",
+        parentTaskId
+    );
 
-    const target = projectTasks.find((t) => t.id === targetId);
-    const targetIndex = projectTasks.indexOf(target);
+    // Remove if already in sibling list
+    const existingIndex = siblings.indexOf(dragged);
+    if (existingIndex !== -1) siblings.splice(existingIndex, 1);
+
+    const target = siblings.find((t) => t.id === targetId);
+    let targetIndex = siblings.indexOf(target);
+    if (targetIndex === -1) targetIndex = 0;
     const insertIndex = targetIndex + (isBelow ? 1 : 0);
 
-    projectTasks.splice(insertIndex, 0, dragged);
+    console.log(
+        "Target task:",
+        target ? target.title : null,
+        "Insert index:",
+        insertIndex
+    );
 
-    projectTasks.forEach((t, i) => (t.order = i));
+    siblings.splice(insertIndex, 0, dragged);
+
+    // Update order for siblings only
+    siblings.forEach((t, i) => (t.order = i));
 
     saveData({
         projects: getAllProjects(),
@@ -314,12 +339,17 @@ const renderSubtasks = (task, projectId) => {
     const subtaskList = document.createElement("div");
     subtaskList.classList.add("subtask-list");
 
-    subtaskList.append(renderDropZone(projectId, task.id, true));
+    subtaskList.append(renderDropZone(projectId, task.id, true, task.id));
     subtasks.forEach((subtask) => {
         const subtaskElement = renderTask(subtask, projectId);
         subtaskElement.classList.add("subtask");
 
-        const subDropZone = renderDropZone(projectId, subtask.id, true);
+        const subDropZone = renderDropZone(
+            projectId,
+            subtask.id,
+            true,
+            task.id
+        );
 
         subtaskList.append(subtaskElement, subDropZone);
     });
