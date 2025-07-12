@@ -189,6 +189,7 @@ body.sidebar-collapsed #app {
 	padding   : 0 0.5rem;
 }
 
+.project-column h2:hover .menu-trigger,
 .task:hover .menu-trigger {
 	visibility: visible;
 }
