@@ -306,6 +306,24 @@ const renderTask = (task, projectId) => {
     return taskContainer;
 };
 
+const renderSubtasks = (task, projectId) => {
+    const subtasks = getSubtasks(task.id);
+
+    const subtaskList = document.createElement("div");
+    subtaskList.classList.add("subtask-list");
+
+    subtasks.forEach((subtask) => {
+        const subtaskElement = renderTask(subtask, projectId);
+        subtaskElement.classList.add("subtask");
+
+        const subDropZone = renderDropZone(projectId, subtask.id, true);
+
+        subtaskList.append(subtaskElement, subDropZone);
+    });
+
+    return subtaskList;
+};
+
 // Task List
 const renderTasks = (projectId) => {
     const taskList = document.createElement("div");
@@ -328,18 +346,9 @@ const renderTasks = (projectId) => {
 
             taskList.append(taskElement);
 
-            // Render subtasks
-            const subtasks = getSubtasks(task.id);
-            subtasks.forEach((subtask) => {
-                const subtaskElement = renderTask(subtask, projectId);
-                subtaskElement.classList.add("subtask");
+            const subtaskList = renderSubtasks(task, projectId);
 
-                const subDropZone = renderDropZone(projectId, subtask.id, true);
-
-                taskList.append(subtaskElement, subDropZone);
-            });
-
-            taskList.append(parentDropZone);
+            taskList.append(subtaskList, parentDropZone);
         });
     }
 
