@@ -240,9 +240,7 @@ const renderTaskDueDate = (task, projectId) => {
     dueDate.title = task.dueDate
         ? `Due: ${formatDate(task.dueDate)} — Click to change`
         : "Click to set due date";
-    dueDate.textContent = task.dueDate
-        ? formatDate(task.dueDate)
-        : "No due date";
+    dueDate.textContent = task.dueDate ? formatDate(task.dueDate) : "No date";
     dueDate.addEventListener("click", () => {
         handleDueDateEdit(task);
     });
