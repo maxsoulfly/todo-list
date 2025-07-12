@@ -9,6 +9,7 @@ import { saveData } from "../storage.js";
 import { renderTasks, renderAddTaskInput, handleDeleteTask } from "./taskUI.js";
 import { addProjectDraggability } from "./dragUI.js";
 import { renderProjectDropZone } from "./dropzonesUI.js";
+import { renderContextualMenu } from "./contextMenuUI.js";
 import { renderSidebar } from "./sidebarUI.js";
 
 // --- Helper Functions ---
@@ -23,16 +24,15 @@ const renderProjectControls = (project, projectTitle) => {
     const controls = document.createElement("span");
     controls.classList.add("project-controls");
 
-    const deleteBtn = document.createElement("span");
-    deleteBtn.innerText = "[X]";
-    deleteBtn.addEventListener("click", () => handleDeleteProject(project.id));
+    const menu = renderContextualMenu([
+        {
+            label: "Edit",
+            onClick: () => handleEditProject(project, projectTitle),
+        },
+        { label: "Delete", onClick: () => handleDeleteProject(project.id) },
+    ]);
 
-    const editBtn = document.createElement("span");
-    editBtn.innerText = "[Edit]";
-    editBtn.addEventListener("click", () =>
-        handleEditProject(project, projectTitle)
-    );
-    controls.append(editBtn, deleteBtn);
+    controls.append(menu);
 
     return controls;
 };
