@@ -324,7 +324,7 @@ const renderTasks = (projectId) => {
 
         parentTasks.forEach((task) => {
             const taskElement = renderTask(task, projectId);
-            const dropZone = renderDropZone(projectId, task.id, true);
+            const parentDropZone = renderDropZone(projectId, task.id, true);
 
             taskList.append(taskElement);
 
@@ -333,12 +333,13 @@ const renderTasks = (projectId) => {
             subtasks.forEach((subtask) => {
                 const subtaskElement = renderTask(subtask, projectId);
                 subtaskElement.classList.add("subtask");
-                const dropZone = renderDropZone(projectId, task.id, true);
 
-                taskList.append(subtaskElement, dropZone);
+                const subDropZone = renderDropZone(projectId, subtask.id, true);
+
+                taskList.append(subtaskElement, subDropZone);
             });
 
-            taskList.append(dropZone);
+            taskList.append(parentDropZone);
         });
     }
 
