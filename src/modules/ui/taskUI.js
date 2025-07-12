@@ -314,6 +314,7 @@ const renderSubtasks = (task, projectId) => {
     const subtaskList = document.createElement("div");
     subtaskList.classList.add("subtask-list");
 
+    subtaskList.append(renderDropZone(projectId, task.id, true));
     subtasks.forEach((subtask) => {
         const subtaskElement = renderTask(subtask, projectId);
         subtaskElement.classList.add("subtask");

@@ -184,6 +184,11 @@ body.sidebar-collapsed #app {
 	opacity    : 0.85;
 }
 
+.subtask-list {
+	
+	margin-left: 3em;
+}
+
 .drag-over-subtarget {
 	outline         : 2px dashed var(--accent-color);
 	background-color: rgba(128, 255, 128, 0.05);
