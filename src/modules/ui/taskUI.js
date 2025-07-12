@@ -5,6 +5,7 @@ import {
     createTask,
     addTask,
     deleteTask,
+    getSubtasks,
 } from "../data.js";
 import { saveData } from "../storage.js";
 import { addTaskDraggability } from "./dragUI.js";
@@ -310,20 +311,34 @@ const renderTasks = (projectId) => {
     const taskList = document.createElement("div");
     taskList.classList.add("task-list");
 
-    const tasks = getTasksForProject(projectId).sort(
+    const allTasks = getTasksForProject(projectId).sort(
         (a, b) => a.order - b.order
     );
 
-    if (tasks.length === 0) {
+    const parentTasks = allTasks.filter((task) => !task.parentTaskId);
+
+    if (parentTasks.length === 0) {
         taskList.append(renderDropZone(projectId, null, true));
     } else {
-        taskList.append(renderDropZone(projectId, tasks[0].id, false));
+        taskList.append(renderDropZone(projectId, allTasks[0].id, false));
 
-        tasks.forEach((task) => {
-            const renderedTask = renderTask(task, projectId);
+        parentTasks.forEach((task) => {
+            const taskElement = renderTask(task, projectId);
             const dropZone = renderDropZone(projectId, task.id, true);
 
-            taskList.append(renderedTask, dropZone);
+            taskList.append(taskElement);
+
+            // Render subtasks
+            const subtasks = getSubtasks(task.id);
+            subtasks.forEach((subtask) => {
+                const subtaskElement = renderTask(subtask, projectId);
+                subtaskElement.classList.add("subtask");
+                const dropZone = renderDropZone(projectId, task.id, true);
+
+                taskList.append(subtaskElement, dropZone);
+            });
+
+            taskList.append(dropZone);
         });
     }
 

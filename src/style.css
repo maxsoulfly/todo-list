@@ -179,6 +179,11 @@ body.sidebar-collapsed #app {
 
 }
 
+.subtask {
+	margin-left: 2rem;
+	opacity    : 0.85;
+}
+
 .menu-wrapper {
 	position: relative;
 }

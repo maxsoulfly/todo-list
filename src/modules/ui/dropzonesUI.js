@@ -62,28 +62,49 @@ const renderDropZone = (projectId, targetTaskId, isBelow) => {
     return dropZone;
 };
 
+const handleProjectDrop = (data, projectId) => {
+    const draggedProject = getAllProjects().find(
+        (p) => p.id === data.draggedProjectId
+    );
+    const draggedProjectTasks = getTasksForProject(draggedProject.id);
+
+    if (draggedProjectTasks.length === 0)
+        demoteProjectToTask(draggedProject.id, projectId);
+    else {
+        mergeProjectTasks(draggedProject.id, projectId);
+    }
+};
+
+const handleTaskDrop = (data, projectId, targetTaskId, isBelow) => {
+    const { taskId: draggedId, fromProjectId } = data;
+    if (!isBelow && draggedId !== targetTaskId) {
+        const draggedTask = getTaskById(draggedId);
+        const targetTask = getTaskById(targetTaskId);
+
+        if (draggedTask && targetTask) {
+            draggedTask.parentTaskId = targetTask.id;
+            draggedTask.projectId = projectId;
+
+            saveData({
+                projects: getAllProjects(),
+                tasks: getAllTasks(),
+            });
+
+            renderProjects();
+            return;
+        }
+    }
+
+    handleTaskReorder(taskId, targetTaskId, projectId, isBelow, fromProjectId);
+};
+
 const handleTaskOrProjectDrop = (e, projectId, targetTaskId, isBelow) => {
     const data = JSON.parse(e.dataTransfer.getData("text/plain"));
 
     if (data.draggedProjectId) {
-        const draggedProject = getAllProjects().find(
-            (p) => p.id === data.draggedProjectId
-        );
-        const draggedProjectTasks = getTasksForProject(draggedProject.id);
-
-        if (draggedProjectTasks.length === 0)
-            demoteProjectToTask(draggedProject.id, projectId);
-        else {
-            mergeProjectTasks(draggedProject.id, projectId);
-        }
+        handleProjectDrop(data, projectId);
     } else {
-        handleTaskReorder(
-            data.taskId,
-            targetTaskId,
-            projectId,
-            isBelow,
-            data.fromProjectId
-        );
+        handleTaskDrop(data, projectId, targetTaskId, isBelow);
     }
 };
 
