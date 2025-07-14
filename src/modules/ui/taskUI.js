@@ -320,7 +320,7 @@ const renderTask = (task, projectId) => {
     taskContainer.classList.add("task");
 
     addTaskDraggability(taskContainer, task, projectId);
-    addTaskDroppability(taskContainer, task, projectId);
+    if (!task.parentTaskId) addTaskDroppability(taskContainer, task, projectId);
 
     const { titleContainer, taskTitle } = renderTaskTitleContainer(
         task,

@@ -146,6 +146,22 @@ const handleTaskDrop = (
     const { taskId: draggedId, fromProjectId } = data;
     const draggedTask = getTaskById(draggedId);
     const targetTask = getTaskById(targetTaskId);
+    
+    console.log(
+        "DROP:",
+        "draggedId:",
+        draggedId,
+        "dragged parent:",
+        draggedTask ? draggedTask.parentTaskId : null,
+        "targetId:",
+        targetTaskId,
+        "target parent:",
+        targetTask ? targetTask.parentTaskId : null,
+        "isBelow:",
+        isBelow,
+        "parentTaskId:",
+        parentTaskId
+    );
 
     if (isBlockedSubSubtaskDrop(draggedTask, targetTask, isBelow)) {
         // Optionally show a message or just do nothing

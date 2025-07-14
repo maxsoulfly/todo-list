@@ -51,17 +51,14 @@ const addTaskDroppability = (taskContainer, task, projectId) => {
 
     taskContainer.addEventListener("drop", (e) => {
         const data = JSON.parse(e.dataTransfer.getData("text/plain"));
-
         if (data.taskId && data.taskId !== task.id) {
             const draggedTask = getTaskById(data.taskId);
             draggedTask.parentTaskId = task.id;
             draggedTask.projectId = projectId;
-
             saveData({
                 projects: getAllProjects(),
                 tasks: getAllTasks(),
             });
-
             renderProjects();
         }
         taskContainer.classList.remove("drag-over-subtarget");
