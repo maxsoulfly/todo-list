@@ -55,6 +55,8 @@ const addTaskDroppability = (taskContainer, task, projectId) => {
             const draggedTask = getTaskById(data.taskId);
             draggedTask.parentTaskId = task.id;
             draggedTask.projectId = projectId;
+
+            
             saveData({
                 projects: getAllProjects(),
                 tasks: getAllTasks(),

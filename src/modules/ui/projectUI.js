@@ -117,6 +117,12 @@ const promoteTaskToProject = (taskId) => {
 
     task.projectId = newProject.id;
 
+    const subtasks = getAllTasks().filter((t) => t.parentTaskId === taskId);
+    subtasks.forEach((sub) => {
+        sub.projectId = newProject.id;
+        sub.parentTaskId = null;
+    });
+    
     handleDeleteTask(taskId);
 
     saveData({

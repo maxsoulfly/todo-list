@@ -40,6 +40,8 @@ const handleAddTaskKeyPress = (e, project, addTaskInput) => {
 
 // Delete Task
 const handleDeleteTask = (taskId) => {
+    const subtasks = getAllTasks().filter((t) => t.parentTaskId === taskId);
+    subtasks.forEach((sub) => deleteTask(sub.id));
     deleteTask(taskId);
     saveData({
         projects: getAllProjects(),
