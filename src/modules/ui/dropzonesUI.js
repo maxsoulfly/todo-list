@@ -87,6 +87,55 @@ const handleProjectDrop = (data, projectId) => {
     }
 };
 
+const isBlockedSubSubtaskDrop = (draggedTask, targetTask, isBelow) => {
+    return (
+        !isBelow &&
+        draggedTask &&
+        targetTask &&
+        draggedTask.parentTaskId !== null && // dragged is a subtask
+        targetTask.parentTaskId !== null // target is a subtask
+    );
+};
+const makeSubtaskDrop = (
+    draggedTask,
+    targetTaskId,
+    projectId,
+    fromProjectId
+) => {
+    draggedTask.parentTaskId = targetTaskId;
+    draggedTask.projectId = projectId;
+
+    handleTaskReorder(
+        draggedTask.id,
+        null, // insert at end
+        projectId,
+        true,
+        fromProjectId,
+        targetTaskId
+    );
+};
+
+const reorderDrop = (
+    draggedTask,
+    targetTaskId,
+    projectId,
+    isBelow,
+    fromProjectId,
+    parentTaskId
+) => {
+    draggedTask.parentTaskId = parentTaskId;
+    draggedTask.projectId = projectId;
+
+    handleTaskReorder(
+        draggedTask.id,
+        targetTaskId,
+        projectId,
+        isBelow,
+        fromProjectId,
+        parentTaskId
+    );
+};
+
 const handleTaskDrop = (
     data,
     projectId,
@@ -96,29 +145,22 @@ const handleTaskDrop = (
 ) => {
     const { taskId: draggedId, fromProjectId } = data;
     const draggedTask = getTaskById(draggedId);
+    const targetTask = getTaskById(targetTaskId);
+
+    if (isBlockedSubSubtaskDrop(draggedTask, targetTask, isBelow)) {
+        // Optionally show a message or just do nothing
+        return;
+    }
 
     if (!draggedTask) return;
 
     // Drop ON a task: make it a subtask, insert at end
     if (draggedId !== targetTaskId) {
-        draggedTask.parentTaskId = targetTaskId;
-        draggedTask.projectId = projectId;
-
-        handleTaskReorder(
-            draggedId,
-            null, // null means insert at end
-            projectId,
-            true, // isBelow: true means after last
-            fromProjectId,
-            targetTaskId // new parent
-        );
+        makeSubtaskDrop(draggedTask, targetTaskId, projectId, fromProjectId);
     } else {
         // Drop BETWEEN: move/reorder in parent group
-        draggedTask.parentTaskId = parentTaskId;
-        draggedTask.projectId = projectId;
-
-        handleTaskReorder(
-            draggedId,
+        reorderDrop(
+            draggedTask,
             targetTaskId,
             projectId,
             isBelow,
