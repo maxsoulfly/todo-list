@@ -5,6 +5,8 @@ import {
     createTask,
     addTask,
     getTaskById,
+    getProject,
+    getSubtasks,
 } from "../data.js";
 import { saveData } from "../storage.js";
 import { handleTaskReorder } from "./taskUI.js";
@@ -78,13 +80,8 @@ const handleProjectDrop = (data, projectId) => {
     const draggedProject = getAllProjects().find(
         (p) => p.id === data.draggedProjectId
     );
-    const draggedProjectTasks = getTasksForProject(draggedProject.id);
 
-    if (draggedProjectTasks.length === 0)
-        demoteProjectToTask(draggedProject.id, projectId);
-    else {
-        mergeProjectTasks(draggedProject.id, projectId);
-    }
+    demoteProjectToTask(draggedProject.id, projectId);
 };
 
 const isBlockedSubSubtaskDrop = (draggedTask, targetTask, isBelow) => {
@@ -192,20 +189,22 @@ const handleTaskOrProjectDrop = (
         handleTaskDrop(data, projectId, targetTaskId, isBelow, parentTaskId);
     }
 };
-
-const mergeProjectTasks = (sourceProjectId, targetProjectId) => {
-    const tasksToMove = getTasksForProject(sourceProjectId);
-    tasksToMove.forEach((task) => (task.projectId = targetProjectId));
-    handleDeleteProject(sourceProjectId);
-};
-
 const demoteProjectToTask = (projectId, targetProjectId) => {
-    const project = getAllProjects().find((p) => p.id === projectId);
+    const project = getProject(projectId);
 
     const newTask = createTask({
         title: project.title,
         projectId: targetProjectId,
     });
+
+    const draggedProjectTasks = getTasksForProject(projectId);
+
+    if (draggedProjectTasks.length > 0) {
+        draggedProjectTasks.forEach((task) => {
+            task.projectId = targetProjectId;
+            task.parentTaskId = newTask.id;
+        });
+    }
 
     addTask(newTask);
 
@@ -222,6 +221,5 @@ export {
     renderProjectDropZone,
     renderDropZone,
     handleTaskOrProjectDrop,
-    mergeProjectTasks,
     demoteProjectToTask,
 };

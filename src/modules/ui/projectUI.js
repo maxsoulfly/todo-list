@@ -4,6 +4,7 @@ import {
     createProject,
     addProject,
     deleteProject,
+    getSubtasks,
 } from "../data.js";
 import { saveData } from "../storage.js";
 import { renderTasks, renderAddTaskInput, handleDeleteTask } from "./taskUI.js";
@@ -117,12 +118,12 @@ const promoteTaskToProject = (taskId) => {
 
     task.projectId = newProject.id;
 
-    const subtasks = getAllTasks().filter((t) => t.parentTaskId === taskId);
+    const subtasks = getSubtasks(taskId);
     subtasks.forEach((sub) => {
         sub.projectId = newProject.id;
         sub.parentTaskId = null;
     });
-    
+
     handleDeleteTask(taskId);
 
     saveData({
