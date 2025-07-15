@@ -38,6 +38,21 @@ const handleAddTaskKeyPress = (e, project, addTaskInput) => {
     addTaskInput.value = "";
 };
 
+// Add Sub-Task
+const handleAddSubtaskTaskKeyPress = (e, projectId, input, parentTaskId) => {
+    if (e.key === "Enter" && input.value.trim()) {
+        const newSubtask = createTask({
+            title: input.value.trim(),
+            projectId: projectId,
+            parentTaskId: parentTaskId,
+        });
+        addTask(newSubtask);
+        saveData({ projects: getAllProjects(), tasks: getAllTasks() });
+        renderProjects();
+    }
+    if (e.key === "Escape") input.remove();
+};
+
 // Delete Task
 const handleDeleteTask = (taskId) => {
     const subtasks = getSubtasks(taskId);
@@ -232,6 +247,33 @@ const renderAddTaskInput = (project) => {
     return input;
 };
 
+// Add Sub-Task Input
+const renderAddSubtaskInput = (parentTask) => {
+    const taskElement = document.querySelector(
+        `[data-task-id="${parentTask.id}"]`
+    );
+
+    const subtaskList = taskElement.parentNode.querySelector(".subtask-list");
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.classList.add("subtask-input");
+    input.placeholder = "Enter subtask title...";
+
+    subtaskList.appendChild(input);
+    input.focus();
+
+    input.addEventListener("keydown", (e) =>
+        handleAddSubtaskTaskKeyPress(
+            e,
+            parentTask.projectId,
+            input,
+            parentTask.id
+        )
+    );
+
+};
+
 // Task Priority Bar
 const renderTaskPriorityBar = (task, projectId) => {
     const priorityBar = document.createElement("span");
@@ -305,7 +347,7 @@ const renderTaskControls = (task, taskTitle) => {
 
     const menu = renderContextualMenu([
         { label: "Edit", onClick: () => handleEditTask(task, taskTitle) },
-        { label: "Add Subtask", onClick: () => console.log("TODO: Subtask") },
+        { label: "Add Subtask", onClick: () => renderAddSubtaskInput(task) },
         { label: "Delete", onClick: () => handleDeleteTask(task.id) },
     ]);
 
