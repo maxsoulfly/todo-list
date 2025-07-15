@@ -271,7 +271,6 @@ const renderAddSubtaskInput = (parentTask) => {
             parentTask.id
         )
     );
-
 };
 
 // Task Priority Bar
@@ -345,12 +344,21 @@ const renderTaskControls = (task, taskTitle) => {
     const controls = document.createElement("span");
     controls.classList.add("task-controls");
 
-    const menu = renderContextualMenu([
+    const menuItems = [
         { label: "Edit", onClick: () => handleEditTask(task, taskTitle) },
-        { label: "Add Subtask", onClick: () => renderAddSubtaskInput(task) },
-        { label: "Delete", onClick: () => handleDeleteTask(task.id) },
-    ]);
+    ];
+    if (task.parentTaskId === null) {
+        menuItems.push({
+            label: "Add Subtask",
+            onClick: () => renderAddSubtaskInput(task),
+        });
+    }
+    menuItems.push({
+        label: "Delete",
+        onClick: () => handleDeleteTask(task.id),
+    });
 
+    const menu = renderContextualMenu(menuItems);
     controls.append(menu);
 
     return controls;
