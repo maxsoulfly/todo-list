@@ -255,6 +255,12 @@ const renderAddSubtaskInput = (parentTask) => {
 
     const subtaskList = taskElement.parentNode.querySelector(".subtask-list");
 
+    let existingInput = subtaskList.querySelector(".subtask-input");
+    if (existingInput) {
+        existingInput.focus();
+        return;
+    }
+
     const input = document.createElement("input");
     input.type = "text";
     input.classList.add("subtask-input");

@@ -93,6 +93,7 @@ const isBlockedSubSubtaskDrop = (draggedTask, targetTask, isBelow) => {
         targetTask.parentTaskId !== null // target is a subtask
     );
 };
+
 const makeSubtaskDrop = (
     draggedTask,
     targetTaskId,
@@ -189,6 +190,7 @@ const handleTaskOrProjectDrop = (
         handleTaskDrop(data, projectId, targetTaskId, isBelow, parentTaskId);
     }
 };
+
 const demoteProjectToTask = (projectId, targetProjectId) => {
     const project = getProject(projectId);
 
