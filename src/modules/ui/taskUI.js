@@ -253,7 +253,11 @@ const renderAddSubtaskInput = (parentTask) => {
         `[data-task-id="${parentTask.id}"]`
     );
 
-    const subtaskList = taskElement.parentNode.querySelector(".subtask-list");
+    const subtaskList =
+        taskElement.nextElementSibling &&
+        taskElement.nextElementSibling.classList.contains("subtask-list")
+            ? taskElement.nextElementSibling
+            : null;
 
     let existingInput = subtaskList.querySelector(".subtask-input");
     if (existingInput) {
