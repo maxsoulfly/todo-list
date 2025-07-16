@@ -125,11 +125,15 @@ const clearDragStyles = (e) => {
     );
 };
 
+// Export drag & drop functions for use in UI modules
 export {
+    // Project drag & drop
     addProjectDraggability,
     startProjectDrag,
+
+    // Task drag & drop
     addTaskDraggability,
+    addTaskDroppability,
     startDrag,
     clearDragStyles,
-    addTaskDroppability,
 };
