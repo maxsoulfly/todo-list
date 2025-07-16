@@ -132,10 +132,10 @@ const resetData = () => {
     tasks.length = 0;
 };
 
+export {
 // =======================
 // Project CRUD
 // =======================
-export {
     createProject,           // Create a new project object
     addProject,              // Add a project to the projects array
     deleteProject,           // Delete a project and its tasks
