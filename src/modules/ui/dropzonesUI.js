@@ -7,6 +7,8 @@ import {
     getTaskById,
     getProject,
     getSubtasks,
+    hasSubtasks,
+    hasTasks,
 } from "../data.js";
 import { saveData } from "../storage.js";
 import { handleTaskReorder } from "./taskUI.js";
@@ -17,6 +19,13 @@ import {
     renderProjects,
 } from "./projectUI.js";
 
+/**
+ * UI Drop Zone Renderers
+ * ----------------------
+ * Functions that create and return drop zone DOM elements for drag-and-drop.
+ */
+
+// Renders a drop zone for projects (used for reordering or promoting tasks to projects)
 const renderProjectDropZone = (projectId, isAfter) => {
     const dropZone = document.createElement("div");
     dropZone.classList.add("project-drop-zone");
@@ -44,6 +53,7 @@ const renderProjectDropZone = (projectId, isAfter) => {
     return dropZone;
 };
 
+// Renders a drop zone for tasks (used for reordering, making subtasks, etc.)
 const renderDropZone = (
     projectId,
     targetTaskId,
@@ -76,6 +86,13 @@ const renderDropZone = (
     return dropZone;
 };
 
+/**
+ * Drop Event Handlers
+ * -------------------
+ * Functions that handle what happens when something is dropped.
+ */
+
+// Handles dropping a project onto another project (demotes project to a task)
 const handleProjectDrop = (data, projectId) => {
     const draggedProject = getAllProjects().find(
         (p) => p.id === data.draggedProjectId
@@ -84,56 +101,7 @@ const handleProjectDrop = (data, projectId) => {
     demoteProjectToTask(draggedProject.id, projectId);
 };
 
-const isBlockedSubSubtaskDrop = (draggedTask, targetTask, isBelow) => {
-    return (
-        !isBelow &&
-        draggedTask &&
-        targetTask &&
-        draggedTask.parentTaskId !== null && // dragged is a subtask
-        targetTask.parentTaskId !== null // target is a subtask
-    );
-};
-
-const makeSubtaskDrop = (
-    draggedTask,
-    targetTaskId,
-    projectId,
-    fromProjectId
-) => {
-    draggedTask.parentTaskId = targetTaskId;
-    draggedTask.projectId = projectId;
-
-    handleTaskReorder(
-        draggedTask.id,
-        null, // insert at end
-        projectId,
-        true,
-        fromProjectId,
-        targetTaskId
-    );
-};
-
-const reorderDrop = (
-    draggedTask,
-    targetTaskId,
-    projectId,
-    isBelow,
-    fromProjectId,
-    parentTaskId
-) => {
-    draggedTask.parentTaskId = parentTaskId;
-    draggedTask.projectId = projectId;
-
-    handleTaskReorder(
-        draggedTask.id,
-        targetTaskId,
-        projectId,
-        isBelow,
-        fromProjectId,
-        parentTaskId
-    );
-};
-
+// Handles dropping a task (reordering, making subtasks, etc.)
 const handleTaskDrop = (
     data,
     projectId,
@@ -175,6 +143,7 @@ const handleTaskDrop = (
     renderProjects();
 };
 
+// Handles dropping either a task or a project (delegates to appropriate handler)
 const handleTaskOrProjectDrop = (
     e,
     projectId,
@@ -191,6 +160,72 @@ const handleTaskOrProjectDrop = (
     }
 };
 
+/**
+ * Drop Logic Helpers
+ * ------------------
+ * Functions that help with specific drop logic (subtasks, reordering, etc.)
+ */
+
+// Checks if dropping a subtask onto another subtask is blocked
+const isBlockedSubSubtaskDrop = (draggedTask, targetTask, isBelow) => {
+    return (
+        !isBelow &&
+        draggedTask &&
+        targetTask &&
+        draggedTask.parentTaskId !== null && // dragged is a subtask
+        targetTask.parentTaskId !== null // target is a subtask
+    );
+};
+
+// Makes a dragged task a subtask of the target task
+const makeSubtaskDrop = (
+    draggedTask,
+    targetTaskId,
+    projectId,
+    fromProjectId
+) => {
+    draggedTask.parentTaskId = targetTaskId;
+    draggedTask.projectId = projectId;
+
+    handleTaskReorder(
+        draggedTask.id,
+        null, // insert at end
+        projectId,
+        true,
+        fromProjectId,
+        targetTaskId
+    );
+};
+
+// Reorders a dragged task relative to the target task
+const reorderDrop = (
+    draggedTask,
+    targetTaskId,
+    projectId,
+    isBelow,
+    fromProjectId,
+    parentTaskId
+) => {
+    draggedTask.parentTaskId = parentTaskId;
+    draggedTask.projectId = projectId;
+
+    handleTaskReorder(
+        draggedTask.id,
+        targetTaskId,
+        projectId,
+        isBelow,
+        fromProjectId,
+        parentTaskId
+    );
+};
+
+/**
+ * Project/Task Conversion
+ * -----------------------
+ * Functions that convert projects to tasks (demotion).
+ */
+
+// Demotes a project to a task under another project
 const demoteProjectToTask = (projectId, targetProjectId) => {
     const project = getProject(projectId);
 
