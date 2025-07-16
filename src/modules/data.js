@@ -41,6 +41,10 @@ const createTask = ({
     };
 };
 
+const hasTasks = (projectId) => getTasksForProject(projectId).length > 0;
+
+const hasSubtasks = (taskId) => getSubtasks(taskId).length > 0;
+
 const addProject = (project) => {
     projects.push(project);
 };
@@ -109,4 +113,6 @@ export {
     getSubtasks,
     getTaskById,
     resetData,
+    hasTasks,
+    hasSubtasks,
 };
