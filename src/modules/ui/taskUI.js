@@ -389,22 +389,22 @@ const renderTasks = (projectId) => {
 
 // ======= Exports: Task UI & Handlers =======
 
-// --- Task CRUD Handlers ---
 export {
-    handleAddTaskKeyPress,    // Add new task to a project
-    handleDeleteTask,         // Delete a task and its subtasks
-    handleEditTask,           // Edit a task's title
+    // --- Task CRUD Handlers ---
+    handleAddTaskKeyPress, // Add new task to a project
+    handleDeleteTask, // Delete a task and its subtasks
+    handleEditTask, // Edit a task's title
 
     // --- Task Property Toggles ---
-    handlePriorityToggle,     // Toggle task priority
-    handleStatusToggle,       // Toggle task status
-    handleDueDateEdit,        // Edit task due date
+    handlePriorityToggle, // Toggle task priority
+    handleStatusToggle, // Toggle task status
+    handleDueDateEdit, // Edit task due date
 
     // --- Task Reorder (Drag & Drop) ---
-    handleTaskReorder,        // Reorder tasks and subtasks via drag & drop
+    handleTaskReorder, // Reorder tasks and subtasks via drag & drop
 
     // --- Task UI Renderers ---
-    renderAddTaskInput,       // Render input for adding a new task
-    renderTask,               // Render a single task element
-    renderTasks,              // Render all tasks for a project
+    renderAddTaskInput, // Render input for adding a new task
+    renderTask, // Render a single task element
+    renderTasks, // Render all tasks for a project
 };
