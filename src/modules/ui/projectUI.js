@@ -13,7 +13,8 @@ import { renderProjectDropZone } from "./dropzonesUI.js";
 import { renderContextualMenu } from "./contextMenuUI.js";
 import { renderSidebar } from "./sidebarUI.js";
 
-// --- Helper Functions ---
+// --- UI Rendering Functions ---
+// Render the project title element
 const renderProjectTitle = (project) => {
     const projectTitle = document.createElement("span");
     projectTitle.classList.add("project-title");
@@ -21,6 +22,7 @@ const renderProjectTitle = (project) => {
     return projectTitle;
 };
 
+// Render the controls (edit/delete menu) for a project
 const renderProjectControls = (project, projectTitle) => {
     const controls = document.createElement("span");
     controls.classList.add("project-controls");
@@ -38,6 +40,7 @@ const renderProjectControls = (project, projectTitle) => {
     return controls;
 };
 
+// Render the header for a project (title + controls)
 const renderProjectHeader = (project) => {
     const header = document.createElement("h2");
 
@@ -49,6 +52,7 @@ const renderProjectHeader = (project) => {
     return header;
 };
 
+// Render a single project column (header, tasks, input)
 const renderProject = (project) => {
     const projectColumn = document.createElement("div");
     projectColumn.classList.add("project-column");
@@ -63,6 +67,7 @@ const renderProject = (project) => {
     return projectColumn;
 };
 
+// Render all projects and their drop zones
 const renderProjects = () => {
     const appContainer = document.getElementById("app");
     appContainer.innerHTML = "";
@@ -83,7 +88,8 @@ const renderProjects = () => {
     renderSidebar();
 };
 
-// --- Handler Functions ---
+// --- Project Manipulation Handlers ---
+// Reorder projects after drag-and-drop
 const handleProjectReorder = (draggedId, targetId, isAfter) => {
     const allProjects = getAllProjects();
     const dragged = allProjects.find((p) => p.id === draggedId);
@@ -110,6 +116,7 @@ const handleProjectReorder = (draggedId, targetId, isAfter) => {
     renderProjects();
 };
 
+// Promote a task to a new project
 const promoteTaskToProject = (taskId) => {
     const task = getAllTasks().find((t) => t.id === taskId);
 
@@ -133,6 +140,7 @@ const promoteTaskToProject = (taskId) => {
     renderProjects();
 };
 
+// Delete a project and update UI
 const handleDeleteProject = (projectId) => {
     deleteProject(projectId);
     saveData({
@@ -143,6 +151,8 @@ const handleDeleteProject = (projectId) => {
     renderProjects();
 };
 
+// --- Project Editing Handlers ---
+// Handle keydown events when editing a project title
 const handleEditProjectKeyDown = (e, project, editTitleInput) => {
     if (e.key === "Enter") {
         if (!editTitleInput.value || editTitleInput.value.trim() === "") {
@@ -162,6 +172,7 @@ const handleEditProjectKeyDown = (e, project, editTitleInput) => {
     }
 };
 
+// Start editing a project's title
 const handleEditProject = (project, projectTitle) => {
     const editTitleInput = document.createElement("input");
     editTitleInput.classList.add("edit-title-input");
@@ -174,6 +185,8 @@ const handleEditProject = (project, projectTitle) => {
     );
 };
 
+// --- Project Adding Handlers ---
+// Handle keydown events when adding a new project
 const handleAddProjectKeyDown = (e, addProjectInput, addProjectBtn) => {
     if (e.key === "Enter") {
         if (!addProjectInput.value || addProjectInput.value.trim() === "") {
@@ -197,7 +210,7 @@ const handleAddProjectKeyDown = (e, addProjectInput, addProjectBtn) => {
     }
 };
 
-// --- Setup Functions ---
+// Setup the "Add Project" button to show input on click
 const setupAddProjectButton = () => {
     const addProjectBtn = document.getElementById("add-project-btn");
     addProjectBtn.addEventListener("click", () => {
@@ -214,13 +227,21 @@ const setupAddProjectButton = () => {
 
 // --- Exports ---
 export {
-    handleProjectReorder,
-    promoteTaskToProject,
-    handleDeleteProject,
-    handleEditProject,
-    handleAddProjectKeyDown,
-    setupAddProjectButton,
+    // UI Rendering
     renderProjectTitle,
     renderProject,
     renderProjects,
+
+    // Project Manipulation
+    handleProjectReorder,
+    promoteTaskToProject,
+    handleDeleteProject,
+
+    // Project Editing
+    handleEditProject,
+    handleEditProjectKeyDown,
+
+    // Project Adding
+    handleAddProjectKeyDown,
+    setupAddProjectButton,
 };
