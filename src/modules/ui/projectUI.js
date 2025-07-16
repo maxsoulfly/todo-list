@@ -227,21 +227,23 @@ const setupAddProjectButton = () => {
 
 // --- Exports ---
 export {
-    // UI Rendering
-    renderProjectTitle,
-    renderProject,
-    renderProjects,
+    // --- Project UI Renderers ---
+    renderProjectTitle, // Renders the project title element
+    renderProject, // Renders a single project column (header, tasks, input)
+    renderProjects, // Renders all projects and their drop zones
 
-    // Project Manipulation
-    handleProjectReorder,
-    promoteTaskToProject,
-    handleDeleteProject,
+    // --- Project CRUD Operations ---
+    handleDeleteProject, // Deletes a project and updates the UI
+    promoteTaskToProject, // Promotes a task to a new project
 
-    // Project Editing
-    handleEditProject,
-    handleEditProjectKeyDown,
+    // --- Project Reorder (Drag & Drop) ---
+    handleProjectReorder, // Reorders projects after drag-and-drop
 
-    // Project Adding
-    handleAddProjectKeyDown,
-    setupAddProjectButton,
+    // --- Project Editing ---
+    handleEditProject, // Starts editing a project's title
+    handleEditProjectKeyDown, // Handles keydown events when editing a project title
+
+    // --- Project Adding ---
+    handleAddProjectKeyDown, // Handles keydown events when adding a new project
+    setupAddProjectButton, // Sets up the "Add Project" button to show input on click
 };
