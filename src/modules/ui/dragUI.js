@@ -127,13 +127,15 @@ const clearDragStyles = (e) => {
 
 // Export drag & drop functions for use in UI modules
 export {
-    // Project drag & drop
-    addProjectDraggability,
-    startProjectDrag,
+    // Project Drag & Drop Functions
+    // ===============================
+    addProjectDraggability, // Make a project column draggable
+    startProjectDrag, // Store project ID in drag data
 
-    // Task drag & drop
-    addTaskDraggability,
-    addTaskDroppability,
-    startDrag,
-    clearDragStyles,
+    // Task Drag & Drop Functions
+    // ===============================
+    addTaskDraggability, // Make a task container draggable
+    addTaskDroppability, // Make a task container a drop target
+    startDrag, // Store task and project IDs in drag data
+    clearDragStyles, // Remove drag-related CSS classes
 };
