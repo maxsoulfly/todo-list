@@ -15,15 +15,15 @@ import { renderProjects } from "./projectUI.js";
 import { renderContextualMenu } from "./contextMenuUI.js";
 import { formatDate, renderStatus } from "./utilsUI.js";
 
-// --- Task Handlers ---
+/* =========================
+   TASK CRUD HANDLERS
+   ========================= */
 
-// Add Task
+// Add new task to a project
 const handleAddTaskKeyPress = (e, project, addTaskInput) => {
     if (e.key !== "Enter") return;
-
     const title = addTaskInput.value.trim();
     if (!title) return;
-
     const newTask = createTask({
         title,
         projectId: project.id,
@@ -38,7 +38,7 @@ const handleAddTaskKeyPress = (e, project, addTaskInput) => {
     addTaskInput.value = "";
 };
 
-// Add Sub-Task
+// Add subtask to a parent task
 const handleAddSubtaskTaskKeyPress = (e, projectId, input, parentTaskId) => {
     if (e.key === "Enter" && input.value.trim()) {
         const newSubtask = createTask({
@@ -53,33 +53,31 @@ const handleAddSubtaskTaskKeyPress = (e, projectId, input, parentTaskId) => {
     if (e.key === "Escape") input.remove();
 };
 
-// Delete Task
+// Delete a task and its subtasks
 const handleDeleteTask = (taskId) => {
     const subtasks = getSubtasks(taskId);
     subtasks.forEach((sub) => deleteTask(sub.id));
-
     deleteTask(taskId);
     saveData({
         projects: getAllProjects(),
         tasks: getAllTasks(),
     });
-
     renderProjects();
 };
 
-// Edit Task
+// Edit a task's title
 const handleEditTask = (task, taskTitle) => {
     const editTitleInput = document.createElement("input");
     editTitleInput.classList.add("edit-title-input");
     editTitleInput.value = task.title;
     taskTitle.replaceWith(editTitleInput);
     editTitleInput.focus();
-
     editTitleInput.addEventListener("keydown", (e) =>
         handleEditTaskKeyDown(e, task, editTitleInput)
     );
 };
 
+// Handle key events for editing task title
 const handleEditTaskKeyDown = (e, task, editTitleInput) => {
     if (e.key === "Enter") {
         if (!editTitleInput.value || editTitleInput.value.trim() === "") {
@@ -93,13 +91,16 @@ const handleEditTaskKeyDown = (e, task, editTitleInput) => {
         });
         renderProjects();
     }
-
     if (e.key === "Escape") {
         renderProjects(); // cancel edit
     }
 };
 
-// Priority Toggle
+/* =========================
+   TASK PROPERTY TOGGLES
+   ========================= */
+
+// Toggle task priority
 const handlePriorityToggle = (task) => {
     const realTask = getAllTasks().find((t) => t.id === task.id);
     if (!realTask) return;
@@ -109,9 +110,7 @@ const handlePriorityToggle = (task) => {
         medium: "high",
         high: null,
     };
-
     task.priority = nextPriority[task.priority];
-
     saveData({
         projects: getAllProjects(),
         tasks: getAllTasks(),
@@ -119,45 +118,38 @@ const handlePriorityToggle = (task) => {
     renderProjects();
 };
 
-// Status Toggle
+// Toggle task status
 const handleStatusToggle = (task) => {
     const realTask = getAllTasks().find((t) => t.id === task.id);
     if (!realTask) return;
-
     if (realTask.status === "todo") realTask.status = "in-progress";
     else if (realTask.status === "in-progress") realTask.status = "done";
     else if (realTask.status === "done") realTask.status = "todo";
-
     saveData({
         projects: getAllProjects(),
         tasks: getAllTasks(),
     });
-
     renderProjects();
 };
 
-// Due Date Edit
+// Edit task due date
 const handleDueDateEdit = (task) => {
     const realTask = getAllTasks().find((t) => t.id === task.id);
     if (!realTask) return;
-
     const dateInput = document.createElement("input");
     dateInput.type = "date";
-    dateInput.value = task.dueDate ? task.dueDate.split("T")[0] : ""; // ISO short
+    dateInput.value = task.dueDate ? task.dueDate.split("T")[0] : "";
     dateInput.classList.add("due-date-input");
-
     const oldBadge = document.querySelector(
         `.due-date-badge[data-task-id="${task.id}"]`
     );
     oldBadge.replaceWith(dateInput);
     dateInput.focus();
-
     dateInput.addEventListener("blur", () => saveDate());
     dateInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter") saveDate();
-        if (e.key === "Escape") dateInput.replaceWith(oldBadge); // optional cancel
+        if (e.key === "Escape") dateInput.replaceWith(oldBadge);
     });
-
     function saveDate() {
         task.dueDate = dateInput.value || null;
         saveData({
@@ -168,7 +160,11 @@ const handleDueDateEdit = (task) => {
     }
 };
 
-// Task Reorder (Drag & Drop)
+/* =========================
+   TASK REORDER (DRAG & DROP)
+   ========================= */
+
+// Reorder tasks and subtasks via drag & drop
 const handleTaskReorder = (
     draggedId,
     targetId,
@@ -180,95 +176,61 @@ const handleTaskReorder = (
     const allTasks = getAllTasks();
     const dragged = allTasks.find((t) => t.id === draggedId);
     if (!dragged) return;
-
-    // Reassign project if necessary
     if (dragged.projectId !== toProjectId) {
         dragged.projectId = toProjectId;
     }
-
-    // === Only tasks with same parentTaskId and projectId ===
     const siblings = allTasks
         .filter(
             (t) =>
                 t.projectId === toProjectId && t.parentTaskId === parentTaskId
         )
         .sort((a, b) => a.order - b.order);
-
-    console.log(
-        "Siblings in reorder:",
-        siblings.map((t) => t.title)
-    );
-    console.log(
-        "Dragged task:",
-        dragged.title,
-        "New parentTaskId:",
-        parentTaskId
-    );
-
-    // Remove if already in sibling list
     const existingIndex = siblings.indexOf(dragged);
     if (existingIndex !== -1) siblings.splice(existingIndex, 1);
-
     const target = siblings.find((t) => t.id === targetId);
     let targetIndex = siblings.indexOf(target);
     if (targetIndex === -1) targetIndex = 0;
     const insertIndex = targetIndex + (isBelow ? 1 : 0);
-
-    console.log(
-        "Target task:",
-        target ? target.title : null,
-        "Insert index:",
-        insertIndex
-    );
-
     siblings.splice(insertIndex, 0, dragged);
-
-    // Update order for siblings only
     siblings.forEach((t, i) => (t.order = i));
-
     saveData({
         projects: getAllProjects(),
         tasks: allTasks,
     });
-
     renderProjects();
 };
 
-// --- Task Render Functions ---
+/* =========================
+   TASK INPUT RENDERERS
+   ========================= */
 
-// Add Task Input
+// Render input for adding a new task
 const renderAddTaskInput = (project) => {
     const input = document.createElement("input");
     input.type = "text";
     input.addEventListener("keypress", (e) =>
         handleAddTaskKeyPress(e, project, input)
     );
-
     return input;
 };
 
-// Add Sub-Task Input
+// Render input for adding a subtask
 const renderAddSubtaskInput = (parentTask) => {
     const taskElement = document.querySelector(
         `[data-task-id="${parentTask.id}"]`
     );
-
     const subtaskList = taskElement.nextElementSibling;
-
     let existingInput = subtaskList.querySelector(".subtask-input");
     if (existingInput) {
         existingInput.focus();
         return;
     }
-
     const input = document.createElement("input");
     input.type = "text";
     input.classList.add("subtask-input");
     input.placeholder = "Enter subtask title...";
-
     subtaskList.appendChild(input);
     input.focus();
-
     input.addEventListener("keydown", (e) =>
         handleAddSubtaskTaskKeyPress(
             e,
@@ -279,7 +241,11 @@ const renderAddSubtaskInput = (parentTask) => {
     );
 };
 
-// Task Priority Bar
+/* =========================
+   TASK UI RENDERERS
+   ========================= */
+
+// Render priority bar for a task
 const renderTaskPriorityBar = (task, projectId) => {
     const priorityBar = document.createElement("span");
     priorityBar.classList.add("priority-bar", `priority-${task.priority}`);
@@ -287,11 +253,10 @@ const renderTaskPriorityBar = (task, projectId) => {
     priorityBar.dataset.taskId = task.id;
     priorityBar.dataset.projectId = projectId;
     priorityBar.title = `[Priority: ${task.priority}] - Click to toggle priority`;
-
     return priorityBar;
 };
 
-// Task Status Toggle
+// Render status toggle for a task
 const renderTaskStatusToggle = (task) => {
     const statusToggle = document.createElement("span");
     statusToggle.classList.add("status-toggle");
@@ -300,7 +265,7 @@ const renderTaskStatusToggle = (task) => {
     return statusToggle;
 };
 
-// Task Title
+// Render task title text
 const renderTaskTitle = (task) => {
     const taskTitle = document.createElement("span");
     taskTitle.classList.add("task-title-text");
@@ -308,7 +273,7 @@ const renderTaskTitle = (task) => {
     return taskTitle;
 };
 
-// Task Due Date
+// Render due date badge for a task
 const renderTaskDueDate = (task, projectId) => {
     const dueDate = document.createElement("span");
     dueDate.classList.add("due-date");
@@ -322,34 +287,28 @@ const renderTaskDueDate = (task, projectId) => {
     dueDate.addEventListener("click", () => {
         handleDueDateEdit(task);
     });
-
     if (!task.dueDate) {
         dueDate.dataset.empty = "true";
     }
-
     return dueDate;
 };
 
-// Task Title Container
+// Render container for task title and controls
 const renderTaskTitleContainer = (task, projectId) => {
     const titleContainer = document.createElement("span");
     titleContainer.classList.add("task-title");
-
     const priorityBar = renderTaskPriorityBar(task, projectId);
     const statusToggle = renderTaskStatusToggle(task);
     const taskTitle = renderTaskTitle(task);
     const dueDate = renderTaskDueDate(task, projectId);
-
     titleContainer.append(priorityBar, statusToggle, taskTitle, dueDate);
-
     return { titleContainer, taskTitle };
 };
 
-// Task Controls
+// Render controls (edit, delete, add subtask) for a task
 const renderTaskControls = (task, taskTitle) => {
     const controls = document.createElement("span");
     controls.classList.add("task-controls");
-
     const menuItems = [
         { label: "Edit", onClick: () => handleEditTask(task, taskTitle) },
     ];
@@ -363,87 +322,68 @@ const renderTaskControls = (task, taskTitle) => {
         label: "Delete",
         onClick: () => handleDeleteTask(task.id),
     });
-
     const menu = renderContextualMenu(menuItems);
     controls.append(menu);
-
     return controls;
 };
 
-// Task (Single)
+// Render a single task element
 const renderTask = (task, projectId) => {
     const taskContainer = document.createElement("p");
-
     taskContainer.classList.add(`priority-${task.priority}`);
     taskContainer.classList.add(`status-${task.status}`);
     taskContainer.classList.add("task");
-
     addTaskDraggability(taskContainer, task, projectId);
     if (!task.parentTaskId) addTaskDroppability(taskContainer, task, projectId);
-
     const { titleContainer, taskTitle } = renderTaskTitleContainer(
         task,
         projectId
     );
     const taskControls = renderTaskControls(task, taskTitle);
-
     taskContainer.append(titleContainer, taskControls);
-
     return taskContainer;
 };
 
+// Render subtasks for a parent task
 const renderSubtasks = (task, projectId) => {
     const subtasks = getSubtasks(task.id);
-
     const subtaskList = document.createElement("div");
     subtaskList.classList.add("subtask-list");
-
     subtaskList.append(renderDropZone(projectId, task.id, true, task.id));
     subtasks.forEach((subtask) => {
         const subtaskElement = renderTask(subtask, projectId);
         subtaskElement.classList.add("subtask");
-
         const subDropZone = renderDropZone(
             projectId,
             subtask.id,
             true,
             task.id
         );
-
         subtaskList.append(subtaskElement, subDropZone);
     });
-
     return subtaskList;
 };
 
-// Task List
+// Render all tasks for a project
 const renderTasks = (projectId) => {
     const taskList = document.createElement("div");
     taskList.classList.add("task-list");
-
     const allTasks = getTasksForProject(projectId).sort(
         (a, b) => a.order - b.order
     );
-
     const parentTasks = allTasks.filter((task) => !task.parentTaskId);
-
     if (parentTasks.length === 0) {
         taskList.append(renderDropZone(projectId, null, true, null));
     } else {
         taskList.append(renderDropZone(projectId, null, true, null));
-
         parentTasks.forEach((task) => {
             const taskElement = renderTask(task, projectId);
             const parentDropZone = renderDropZone(projectId, null, true, null);
-
             taskList.append(taskElement);
-
             const subtaskList = renderSubtasks(task, projectId);
-
             taskList.append(subtaskList, parentDropZone);
         });
     }
-
     return taskList;
 };
 
