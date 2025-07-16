@@ -255,8 +255,16 @@ const demoteProjectToTask = (projectId, targetProjectId) => {
 };
 
 export {
-    renderProjectDropZone,
-    renderDropZone,
-    handleTaskOrProjectDrop,
-    demoteProjectToTask,
+    // Task UI Renderers
+    // ===============================
+    renderProjectDropZone, // Renders a drop zone for projects (drag-and-drop)
+    renderDropZone, // Renders a drop zone for tasks (drag-and-drop)
+
+    // Task Reorder (Drag & Drop)
+    // ===============================
+    handleTaskOrProjectDrop, // Handles drop event for tasks/projects (delegates logic)
+
+    // Project/Task Conversion
+    // ===============================
+    demoteProjectToTask, // Converts a project into a task under another project
 };
