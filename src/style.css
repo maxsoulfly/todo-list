@@ -1,52 +1,56 @@
+/* ===========================================================
+	Base Styles / Reset
+	-----------------------------------------------------------
+	Basic resets, font settings, and default element styles.
+=========================================================== */
+
 :root {
-
-	--accent-color: hsl(122 39% 49%);
-	--success-clr : var(--accent-color);
-	--danger-clr  : hsl(0, 94%, 57%);
-	--warning-clr : hsl(43 100% 63%);
-
-
-	--todo-clr       : hsl(0 0% 80%);
-	--in-progress-clr: hsl(33 100% 50%);
-	--done-clr       : hsl(from var(--accent-color) h s 70%);
-
+	/* Color variables for theming */
+	--accent-color       : hsl(122 39% 49%);
+	--success-clr        : var(--accent-color);
+	--danger-clr         : hsl(0, 94%, 57%);
+	--warning-clr        : hsl(43 100% 63%);
+	--todo-clr           : hsl(0 0% 80%);
+	--in-progress-clr    : hsl(33 100% 50%);
+	--done-clr           : hsl(from var(--accent-color) h s 70%);
 	--priority-null-clr  : hsl(0 0% 27%);
 	--priority-low-clr   : var(--accent-color);
 	--priority-medium-clr: hsl(from var(--warning-clr) h s l);
 	--priority-high-clr  : hsl(from var(--danger-clr) h s l);
-
-
-	--bg-clr      : hsl(0 0% 7%);
-	--dragging-clr: hsl(0 0% 50%);
-	--fg-clr      : hsl(0 0% 93%);
-	--column-bg   : hsl(from var(--bg-clr) h s 13%);
-	--border-clr  : hsl(0 0% 20%);
-	--input-bg    : var(--bg-clr);
-	--input-border: hsl(from var(--bg-clr) h s 33%);
+	--bg-clr             : hsl(0 0% 7%);
+	--dragging-clr       : hsl(0 0% 50%);
+	--fg-clr             : hsl(0 0% 93%);
+	--column-bg          : hsl(from var(--bg-clr) h s 13%);
+	--border-clr         : hsl(0 0% 20%);
+	--input-bg           : var(--bg-clr);
+	--input-border       : hsl(from var(--bg-clr) h s 33%);
 }
 
+/* ===========================================================
+	Theming (Dark/Light)
+	-----------------------------------------------------------
+	Theme overrides for light mode.
+=========================================================== */
+
 body[data-theme="light"] {
-	--accent-color: hsl(122 39% 40%);
-	--success-clr : var(--accent-color);
-	--danger-clr  : hsl(0, 70%, 50%);
-	--warning-clr : hsl(43, 100%, 50%);
-
-	--todo-clr       : hsl(0, 0%, 11%);
-	--in-progress-clr: hsl(33 100% 40%);
-	--done-clr       : hsl(from var(--accent-color) h s 20%);
-
+	--accent-color       : hsl(122 39% 40%);
+	--success-clr        : var(--accent-color);
+	--danger-clr         : hsl(0, 70%, 50%);
+	--warning-clr        : hsl(43, 100%, 50%);
+	--todo-clr           : hsl(0, 0%, 11%);
+	--in-progress-clr    : hsl(33 100% 40%);
+	--done-clr           : hsl(from var(--accent-color) h s 20%);
 	--priority-null-clr  : hsl(0 0% 65%);
 	--priority-low-clr   : var(--accent-color);
 	--priority-medium-clr: hsl(from var(--warning-clr) h s l);
 	--priority-high-clr  : hsl(from var(--danger-clr) h s l);
-
-	--bg-clr      : hsl(0 0% 98%);
-	--fg-clr      : hsl(0 0% 10%);
-	--dragging-clr: hsl(0 0% 50%);
-	--column-bg   : hsl(from var(--bg-clr) h s 90%);
-	--border-clr  : hsl(0 0% 80%);
-	--input-bg    : var(--bg-clr);
-	--input-border: hsl(from var(--bg-clr) h s 80%);
+	--bg-clr             : hsl(0 0% 98%);
+	--fg-clr             : hsl(0 0% 10%);
+	--dragging-clr       : hsl(0 0% 50%);
+	--column-bg          : hsl(from var(--bg-clr) h s 90%);
+	--border-clr         : hsl(0 0% 80%);
+	--input-bg           : var(--bg-clr);
+	--input-border       : hsl(from var(--bg-clr) h s 80%);
 }
 
 body {
@@ -60,6 +64,104 @@ body {
 	min-height      : 100vh;
 }
 
+/* ===========================================================
+	Typography
+	-----------------------------------------------------------
+	Font sizes, weights, and text decorations.
+=========================================================== */
+
+.project-column h2 {
+	display        : flex;
+	justify-content: space-between;
+	align-items    : center;
+	margin         : 0;
+	font-size      : 1.5rem;
+	color          : var(--fg-clr);
+}
+
+.task-list p {
+	font-size: 1rem;
+}
+
+.project-controls span,
+.task-controls span {
+	color      : var(--in-progress-clr);
+	font-size  : 0.9rem;
+	user-select: none;
+}
+
+.due-date-badge {
+	font-size: 0.7rem;
+}
+
+.sidebar-project-item {
+	font-size: large;
+}
+
+/* ===========================================================
+	Layout and Containers
+	-----------------------------------------------------------
+	Main containers, flex layouts, and spacing.
+=========================================================== */
+
+#main-container {
+	flex-grow : 1;
+	transition: margin-left 0.3s ease;
+}
+
+#app {
+	display   : flex;
+	overflow-x: auto;
+	gap       : .5rem;
+	flex-grow : 1;
+	padding   : 2rem;
+	transition: margin-left 0.3s ease;
+}
+
+.project-column {
+	display         : flex;
+	flex-direction  : column;
+	gap             : 0.25rem;
+	background-color: var(--column-bg);
+	padding         : 1rem 1rem 2rem 1rem;
+	border          : 1px solid var(--border-clr);
+	border-radius   : 8px;
+	min-width       : 250px;
+	flex-shrink     : 0;
+}
+
+.subtask-list {
+	margin-left: 3em;
+}
+
+#sidebar {
+	position      : relative;
+	display       : flex;
+	flex-direction: column;
+	width         : 220px;
+	background    : var(--column-bg);
+	color         : var(--fg-clr);
+	padding       : 1rem;
+	box-sizing    : border-box;
+	transition    : width 0.3s ease, padding 0.3s ease;
+	margin        : 0;
+	gap           : 0;
+	min-height    : 100vh;
+}
+
+#project-list {
+	flex-grow : 1;
+	overflow-y: auto;
+	margin    : 0;
+	padding   : 0;
+	list-style: none;
+}
+
+/* ===========================================================
+	Buttons and Controls
+	-----------------------------------------------------------
+	Button styles, input fields, and interactive controls.
+=========================================================== */
 
 button {
 	background-color: var(--column-bg);
@@ -73,27 +175,21 @@ button {
 	transition      : background-color 0.2s ease;
 }
 
-#main-container {
-	flex-grow : 1;
-	transition: margin-left 0.3s ease;
+#add-project-btn {
+	margin-bottom: 1rem;
+	position     : sticky;
+	top          : 1rem;
+	z-index      : 10;
 }
 
-
-body.sidebar-collapsed #app {
-	margin-left: 2rem;
-}
-
-#app {
-	display   : flex;
-	overflow-x: auto;
-	gap       : .5rem;
-	flex-grow : 1;
-	padding   : 2rem;
-	transition: margin-left 0.3s ease;
+#add-project-btn:hover {
+	background-color: var(--input-border);
 }
 
 #add-project-bar {
 	margin-bottom: 1rem;
+	padding-top  : 2.5rem;
+	border-bottom: 1px solid var(--input-border);
 }
 
 #add-project-input {
@@ -108,32 +204,62 @@ body.sidebar-collapsed #app {
 	box-sizing      : border-box;
 }
 
-.project-column {
-	display         : flex;
-	flex-direction  : column;
-	gap             : 0.25rem;
-	background-color: var(--column-bg);
-	padding         : 1rem 1rem 2rem 1rem;
-
-	border       : 1px solid var(--border-clr);
-	border-radius: 8px;
-	min-width    : 250px;
-	flex-shrink  : 0;
+input[type="text"] {
+	width           : 100%;
+	margin-top      : 0.5rem;
+	padding         : 0.5rem;
+	background-color: var(--input-bg);
+	border          : 1px solid var(--input-border);
+	color           : var(--fg-clr);
 }
 
-.project-column input[type="text"] {
-	width     : 100%;
-	box-sizing: border-box;
+input.edit-title-input,
+input[type="text"] {
+	background-color: var(--input-bg);
+	border          : 1px solid var(--input-border);
+	color           : var(--fg-clr);
 }
 
-.project-column h2 {
-	display        : flex;
-	justify-content: space-between;
-	align-items    : center;
-	margin         : 0;
-	font-size      : 1.5rem;
-	color          : var(--fg-clr);
+.edit-title-input {
+	display    : flex;
+	align-self : center;
+	margin-top : 0;
+	font-size  : 1rem;
+	padding    : 0.2rem 0.4rem;
+	line-height: 1.2;
 }
+
+.status-toggle {
+	color          : inherit;
+	font-weight    : normal;
+	text-decoration: none;
+	cursor         : pointer;
+	overflow-wrap  : normal;
+}
+
+.status-toggle:hover {
+	text-shadow: 0 0 8px var(--warning-clr);
+	color      : var(--warning-clr);
+}
+
+.project-controls span,
+.task-controls span {
+	color      : var(--in-progress-clr);
+	font-size  : 0.9rem;
+	user-select: none;
+}
+
+.project-controls span:hover,
+.task-controls span:hover {
+	text-shadow: 0 0 8px var(--warning-clr);
+	cursor     : pointer;
+}
+
+/* ===========================================================
+	Task and Subtask Styles
+	-----------------------------------------------------------
+	Styles for tasks, subtasks, priorities, and badges.
+=========================================================== */
 
 .task-list p {
 	display        : flex;
@@ -169,14 +295,12 @@ body.sidebar-collapsed #app {
 	box-shadow: 0 0 8px var(--priority-null-clr);
 }
 
-
 .task-title {
 	display    : inline-flex;
 	align-items: flex-start;
 	gap        : 0.5rem;
 	white-space: nowrap;
 	flex-wrap  : wrap;
-
 }
 
 .subtask {
@@ -184,9 +308,159 @@ body.sidebar-collapsed #app {
 	opacity    : 0.85;
 }
 
-.subtask-list {
+.status-todo .task-title-text,
+.status-in-progress .task-title-text,
+.status-done .task-title-text {
+	display       : inline-block;
+	max-width     : 12rem;
+	overflow-wrap : break-word;
+	word-break    : break-word;
+	white-space   : normal;
+	vertical-align: middle;
+}
 
-	margin-left: 3em;
+.status-todo .task-title-text {
+	color  : var(--todo-clr);
+	opacity: 0.7;
+}
+
+.status-in-progress .task-title-text {
+	font-style: italic;
+}
+
+.status-done .task-title-text {
+	text-decoration: line-through;
+	opacity        : 0.4;
+}
+
+.task-controls {
+	margin-left: auto;
+	align-self : flex-start;
+}
+
+.task-title,
+.task-controls,
+.project-controls {
+	display: flex;
+	gap    : 0.5rem;
+}
+
+.priority-bar {
+	display       : inline-block;
+	width         : 8px;
+	height        : 1.2em;
+	vertical-align: middle;
+	margin-right  : 0.5rem;
+	cursor        : pointer;
+	border-left   : 8px solid transparent;
+}
+
+.priority-bar.priority-low {
+	border-color: var(--priority-low-clr);
+}
+
+.priority-bar.priority-medium {
+	border-color: var(--priority-medium-clr);
+}
+
+.priority-bar.priority-high {
+	border-color: var(--priority-high-clr);
+}
+
+.priority-bar.priority-null {
+	border-color: var(--priority-null-clr);
+}
+
+.due-date-badge {
+	background-color: var(--priority-null-clr);
+	color           : var(--todo-clr);
+	font-size       : 0.7rem;
+	padding         : 2px 6px;
+	border-radius   : 4px;
+	cursor          : pointer;
+	transition      : opacity 0.2s ease;
+}
+
+.due-date-badge[data-empty="true"] {
+	color     : transparent;
+	background: transparent;
+}
+
+.due-date-badge[data-empty="true"]:hover {
+	color : var(--dragging-clr);
+	border: 1px dashed var(--dragging-clr);
+	;
+}
+
+/* ===========================================================
+	Sidebar and Navigation
+	-----------------------------------------------------------
+	Sidebar, sidebar toggle, and project list styles.
+=========================================================== */
+
+#sidebar-toggle {
+	position     : absolute;
+	top          : 1rem;
+	left         : 1rem;
+	z-index      : 100;
+	background   : var(--column-bg);
+	color        : var(--fg-clr);
+	border       : 1px solid var(--border-clr);
+	padding      : 0.25rem 0.5rem;
+	border-radius: 0 4px 4px 0;
+	cursor       : pointer;
+	transition   : right 0.3s ease;
+	font-size    : large;
+	right        : -1.5rem;
+	width        : 2rem;
+	transition   : transform 0.3s ease, opacity 0.3s ease;
+}
+
+#sidebar-toggle:hover {
+	background-color: var(--input-border);
+}
+
+#sidebar.collapsed+#sidebar-toggle {
+	transform: rotate(180deg);
+}
+
+#sidebar.collapsed {
+	width   : 0;
+	padding : 0;
+	overflow: hidden;
+}
+
+.sidebar-project-item {
+	cursor       : pointer;
+	padding      : 0.5rem;
+	color        : var(--fg-clr);
+	border-radius: 4px;
+	font-size    : large;
+}
+
+.sidebar-project-item:hover {
+	background-color: var(--input-border);
+}
+
+.project-title {
+	cursor: move;
+}
+
+.project-hidden {
+	opacity: 0.2;
+}
+
+
+/* ===========================================================
+	Utilities and Helpers
+	-----------------------------------------------------------
+	Utility classes, drag/drop, menu popups, and scrollbars.
+=========================================================== */
+
+/* Drag and drop helpers */
+.task-list .dragging {
+	opacity: 0.4;
+	border : 2px dashed var(--dragging-clr);
 }
 
 .drag-over-subtarget {
@@ -194,6 +468,43 @@ body.sidebar-collapsed #app {
 	background-color: rgba(128, 255, 128, 0.05);
 }
 
+.drop-zone {
+	min-height: 0.25rem;
+	padding   : 0.25rem 0;
+	border    : none;
+	transition: all 0.1s ease;
+}
+
+.drop-zone.drag-over {
+	border          : 2px dashed var(--warning-clr);
+	border-radius   : 6px;
+	min-height      : 2.5rem;
+	background-color: rgba(255, 255, 255, 0.03);
+}
+
+.task-list>.drop-zone:last-child {
+	margin-bottom: 0.2rem;
+}
+
+.project-drop-zone {
+	min-width : 0.5rem;
+	padding   : 0 0.25rem;
+	border    : none;
+	transition: all 0.1s ease;
+}
+
+.project-drop-zone.drag-over {
+	border          : 2px dashed var(--border-clr);
+	border-radius   : 6px;
+	min-width       : 5rem;
+	background-color: rgba(255, 255, 255, 0.03);
+}
+
+.project-drop-zone:last-child {
+	margin-right: 0.2rem;
+}
+
+/* Menu popups */
 .menu-wrapper {
 	position: relative;
 }
@@ -235,311 +546,26 @@ body.sidebar-collapsed #app {
 	display: block;
 }
 
-
-.task-controls {
-	margin-left: auto;
-	align-self : flex-start;
-}
-
-.task-title,
-.task-controls,
-.project-controls {
-	display: flex;
-	gap    : 0.5rem;
-}
-
-.project-controls span,
-.task-controls span {
-	color      : var(--in-progress-clr);
-	font-size  : 0.9rem;
-	user-select: none;
-}
-
-.status-toggle {
-	color          : inherit;
-	font-weight    : normal;
-	text-decoration: none;
-	cursor         : pointer;
-	overflow-wrap  : normal;
-}
-
-.status-toggle:hover {
-	text-shadow: 0 0 8px var(--warning-clr);
-	color      : var(--warning-clr);
-}
-
-.status-todo .task-title-text,
-.status-in-progress .task-title-text,
-.status-done .task-title-text {
-
-	display       : inline-block;
-	max-width     : 12rem;
-	overflow-wrap : break-word;
-	word-break    : break-word;
-	white-space   : normal;
-	vertical-align: middle;
-}
-
-.status-todo .task-title-text {
-	color  : var(--todo-clr);
-	opacity: 0.7;
-}
-
-.status-in-progress .task-title-text {
-	font-style: italic;
-}
-
-.status-done .task-title-text {
-	text-decoration: line-through;
-	opacity        : 0.4;
-}
-
-
-
-.project-controls span:hover,
-.task-controls span:hover {
-	text-shadow: 0 0 8px var(--warning-clr);
-
-	cursor: pointer;
-}
-
-.edit-title-input {
-	display    : flex;
-	align-self : center;
-	margin-top : 0;
-	font-size  : 1rem;
-	padding    : 0.2rem 0.4rem;
-	line-height: 1.2;
-}
-
-
-input.edit-title-input,
-input[type="text"] {
-	background-color: var(--input-bg);
-	border          : 1px solid var(--input-border);
-	color           : var(--fg-clr);
-}
-
-input[type="text"] {
-	width     : 100%;
-	margin-top: 0.5rem;
-	padding   : 0.5rem;
-}
-
-.priority-bar {
-	display       : inline-block;
-	width         : 8px;
-	height        : 1.2em;
-	vertical-align: middle;
-	margin-right  : 0.5rem;
-	cursor        : pointer;
-	border-left   : 8px solid transparent;
-}
-
-.priority-bar.priority-low {
-	border-color: var(--priority-low-clr);
-}
-
-.priority-bar.priority-medium {
-	border-color: var(--priority-medium-clr);
-}
-
-.priority-bar.priority-high {
-	border-color: var(--priority-high-clr);
-}
-
-.priority-bar.priority-null {
-	border-color: var(--priority-null-clr);
-}
-
-
-#add-project-btn {
-	margin-bottom: 1rem;
-	position     : sticky;
-	top          : 1rem;
-	z-index      : 10;
-}
-
-#add-project-btn:hover {
-	background-color: var(--input-border);
-}
-
-
-
-.due-date-badge {
-	background-color: var(--priority-null-clr);
-	color           : var(--todo-clr);
-	font-size       : 0.7rem;
-	padding         : 2px 6px;
-	border-radius   : 4px;
-	cursor          : pointer;
-	transition      : opacity 0.2s ease;
-}
-
-.due-date-badge[data-empty="true"] {
-	color     : transparent;
-	background: transparent;
-}
-
-.due-date-badge[data-empty="true"]:hover {
-	color : var(--dragging-clr);
-	border: 1px dashed var(--dragging-clr);
-	;
-}
-
-
-.task-list .dragging {
-	opacity: 0.4;
-	border : 2px dashed var(--dragging-clr);
-}
-
-
-
-.drop-zone {
-	min-height: 0.25rem;
-	padding   : 0.25rem 0;
-	border    : none;
-	transition: all 0.1s ease;
-}
-
-
-.drop-zone.drag-over {
-	border          : 2px dashed var(--warning-clr);
-	border-radius   : 6px;
-	min-height      : 2.5rem;
-	background-color: rgba(255, 255, 255, 0.03);
-}
-
-.task-list>.drop-zone:last-child {
-	margin-bottom: 0.2rem;
-}
-
-.project-drop-zone {
-	min-width : 0.5rem;
-	padding   : 0 0.25rem;
-	border    : none;
-	transition: all 0.1s ease;
-}
-
-
-.project-drop-zone.drag-over {
-	border          : 2px dashed var(--border-clr);
-	border-radius   : 6px;
-	min-width       : 5rem;
-	background-color: rgba(255, 255, 255, 0.03);
-}
-
-.project-drop-zone:last-child {
-	margin-right: 0.2rem;
-}
-
-.project-title {
-	cursor: move;
-}
-
-#sidebar {
-	position      : relative;
-	display       : flex;
-	flex-direction: column;
-	width         : 220px;
-	background    : var(--column-bg);
-	color         : var(--fg-clr);
-	padding       : 1rem;
-	box-sizing    : border-box;
-	transition    : width 0.3s ease, padding 0.3s ease;
-	margin        : 0;
-	gap           : 0;
-	min-height    : 100vh;
-}
-
-#sidebar-toggle {
-	position     : absolute;
-	top          : 1rem;
-	left         : 1rem;
-	/* move just outside sidebar */
-	z-index      : 100;
-	background   : var(--column-bg);
-	color        : var(--fg-clr);
-	border       : 1px solid var(--border-clr);
-	padding      : 0.25rem 0.5rem;
-	border-radius: 0 4px 4px 0;
-	cursor       : pointer;
-	transition   : right 0.3s ease;
-	font-size    : large;
-}
-
-#sidebar-toggle:hover {
-	background-color: var(--input-border);
-}
-
-#sidebar-toggle {
-	transition: transform 0.3s ease, opacity 0.3s ease;
-	right     : -1.5rem;
-	width     : 2rem;
-}
-
-#sidebar.collapsed+#sidebar-toggle {
-	transform: rotate(180deg);
-}
-
-#project-list {
-	flex-grow : 1;
-	overflow-y: auto;
-	margin    : 0;
-	padding   : 0;
-	list-style: none;
-}
-
-.project-hidden {
-	opacity: 0.2;
-}
-
-#add-project-bar {
-	padding-top  : 2.5rem;
-	border-bottom: 1px solid var(--input-border);
-	margin-bottom: 1rem;
-}
-
-#sidebar.collapsed {
-	width   : 0;
-	padding : 0;
-	overflow: hidden;
-}
-
-.sidebar-project-item {
-	font-size    : large;
-	cursor       : pointer;
-	padding      : 0.5rem;
-	color        : var(--fg-clr);
-	border-radius: 4px;
-}
-
-.sidebar-project-item:hover {
-	background-color: var(--input-border);
-}
-
-
-/* Overall track */
+/* Scrollbar styling */
 ::-webkit-scrollbar {
 	width : 8px;
-	/* vertical scrollbar */
 	height: 16px;
-	/* horizontal scrollbar */
 }
 
-/* Track background */
 ::-webkit-scrollbar-track {
 	background: var(--column-bg);
 }
 
-/* Scrollbar thumb */
 ::-webkit-scrollbar-thumb {
 	background-color: var(--input-border);
 	border-radius   : 4px;
 }
 
-/* On hover */
 ::-webkit-scrollbar-thumb:hover {
 	background-color: var(--fg-clr);
 	cursor          : pointer;
 }
+
+/* ===========================================================
+	End of style.css
+=========================================================== */
