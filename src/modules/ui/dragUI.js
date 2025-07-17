@@ -87,8 +87,11 @@ const addTaskDroppability = (taskContainer, task, projectId) => {
  */
 const handleTaskDropOnTask = (e, targetTask, projectId) => {
     const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+    const draggedTask = getTaskById(data.taskId);
+
+    if (hasSubtasks(draggedTask.id)) return;
+
     if (data.taskId && data.taskId !== targetTask.id) {
-        const draggedTask = getTaskById(data.taskId);
         draggedTask.parentTaskId = targetTask.id;
         draggedTask.projectId = projectId;
 
