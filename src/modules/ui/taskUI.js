@@ -174,11 +174,14 @@ const handleTaskReorder = (
     parentTaskId = null
 ) => {
     const allTasks = getAllTasks();
-    const dragged = allTasks.find((t) => t.id === draggedId);
+    const dragged = getTaskById(draggedId);
+
     if (!dragged) return;
+
     if (dragged.projectId !== toProjectId) {
         dragged.projectId = toProjectId;
     }
+
     const siblings = allTasks
         .filter(
             (t) =>
@@ -186,13 +189,19 @@ const handleTaskReorder = (
         )
         .sort((a, b) => a.order - b.order);
     const existingIndex = siblings.indexOf(dragged);
+
     if (existingIndex !== -1) siblings.splice(existingIndex, 1);
+
     const target = siblings.find((t) => t.id === targetId);
     let targetIndex = siblings.indexOf(target);
+
     if (targetIndex === -1) targetIndex = 0;
+
     const insertIndex = targetIndex + (isBelow ? 1 : 0);
+
     siblings.splice(insertIndex, 0, dragged);
     siblings.forEach((t, i) => (t.order = i));
+
     saveData({
         projects: getAllProjects(),
         tasks: allTasks,
