@@ -223,7 +223,11 @@ const reorderDrop = (
  */
 
 // Demotes a project to a task under another project
-const demoteProjectToTask = (projectId, targetProjectId) => {
+const demoteProjectToTask = (
+    projectId,
+    targetProjectId,
+    returnTaskId = false
+) => {
     const project = getProject(projectId);
 
     const newTask = createTask({
@@ -243,6 +247,8 @@ const demoteProjectToTask = (projectId, targetProjectId) => {
     addTask(newTask);
 
     handleDeleteProject(projectId);
+
+    if (returnTaskId) return newTask.id;
 
     saveData({
         projects: getAllProjects(),

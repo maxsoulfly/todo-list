@@ -58,7 +58,9 @@ const renderProject = (project) => {
     projectColumn.classList.add("project-column");
 
     const header = renderProjectHeader(project);
+
     addProjectDraggability(header, project);
+
     const taskList = renderTasks(project.id);
     const input = renderAddTaskInput(project);
 

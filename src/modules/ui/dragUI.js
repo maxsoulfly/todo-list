@@ -4,9 +4,11 @@ import {
     getTaskById,
     hasTasks,
     hasSubtasks,
+    getProject,
 } from "../data.js";
 import { saveData } from "../storage.js";
 import { renderProjects } from "./projectUI.js";
+import { demoteProjectToTask } from "./dropzonesUI.js";
 // import {} from "./taskUI.js";
 
 /* =========================
@@ -44,7 +46,36 @@ const startProjectDrag = (e, projectId) => {
         })
     );
 };
+/**
+ * Handles dropping a dragged project onto task (for subtasks).
+ */
+const handleProjectDropOnTask = (e, targetTask, targetProjectId) => {
+    const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+    console.log("data :", data);
 
+    const draggedProject = getProject(data.draggedProjectId);
+
+    const newTaskId = demoteProjectToTask(
+        draggedProject.id,
+        targetProjectId,
+        true
+    );
+
+    const draggedTask = getTaskById(newTaskId);
+
+    if (newTaskId && newTaskId !== targetTask.id) {
+        if (!hasSubtasks(draggedTask.id)) {
+            draggedTask.parentTaskId = targetTask.id;
+        }
+        draggedTask.projectId = targetProjectId;
+
+        saveData({
+            projects: getAllProjects(),
+            tasks: getAllTasks(),
+        });
+        renderProjects();
+    }
+};
 /* =========================
    Task Drag & Drop Logic
    ========================= */
@@ -66,7 +97,7 @@ const addTaskDraggability = (taskContainer, task, projectId) => {
 /**
  * Makes a task container a drop target for other tasks.
  */
-const addTaskDroppability = (taskContainer, task, projectId) => {
+const addTaskDroppability = (taskContainer, targetTask, projectId) => {
     taskContainer.addEventListener("dragover", (e) => {
         e.preventDefault();
         taskContainer.classList.add("drag-over-subtarget");
@@ -77,7 +108,8 @@ const addTaskDroppability = (taskContainer, task, projectId) => {
     });
 
     taskContainer.addEventListener("drop", (e) => {
-        handleTaskDropOnTask(e, task, projectId);
+        handleTaskDropOnTask(e, targetTask, projectId);
+        handleProjectDropOnTask(e, targetTask, projectId);
         taskContainer.classList.remove("drag-over-subtarget");
     });
 };
@@ -85,7 +117,7 @@ const addTaskDroppability = (taskContainer, task, projectId) => {
 /**
  * Handles dropping a dragged task onto another task (for subtasks).
  */
-const handleTaskDropOnTask = (e, targetTask, projectId) => {
+const handleTaskDropOnTask = (e, targetTask, targetProjectId) => {
     const data = JSON.parse(e.dataTransfer.getData("text/plain"));
     const draggedTask = getTaskById(data.taskId);
 
@@ -93,7 +125,7 @@ const handleTaskDropOnTask = (e, targetTask, projectId) => {
         if (!hasSubtasks(draggedTask.id)) {
             draggedTask.parentTaskId = targetTask.id;
         }
-        draggedTask.projectId = projectId;
+        draggedTask.projectId = targetProjectId;
 
         saveData({
             projects: getAllProjects(),
