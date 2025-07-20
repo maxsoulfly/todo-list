@@ -52,8 +52,6 @@ const startProjectDrag = (e, projectId) => {
 const handleProjectDropOnTask = (e, targetTask, targetProjectId) => {
     const data = JSON.parse(e.dataTransfer.getData("text/plain"));
 
-    if (!data.draggedProjectId) return;
-
     const draggedProject = getProject(data.draggedProjectId);
 
     const newTaskId = demoteProjectToTask(
@@ -109,8 +107,13 @@ const addTaskDroppability = (taskContainer, targetTask, projectId) => {
     });
 
     taskContainer.addEventListener("drop", (e) => {
-        handleTaskDropOnTask(e, targetTask, projectId);
-        handleProjectDropOnTask(e, targetTask, projectId);
+        const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+
+        if (data.taskId) {
+            handleTaskDropOnTask(e, targetTask, projectId);
+        } else if (data.draggedProjectId) {
+            handleProjectDropOnTask(e, targetTask, projectId);
+        }
         taskContainer.classList.remove("drag-over-subtarget");
     });
 };
