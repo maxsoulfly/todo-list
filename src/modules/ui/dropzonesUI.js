@@ -11,7 +11,7 @@ import {
     hasTasks,
 } from "../data.js";
 import { saveData } from "../storage.js";
-import { handleTaskReorder } from "./taskUI.js";
+import { reorderTaskInGroup } from "./taskUI.js";
 import {
     handleProjectReorder,
     handleDeleteProject,
@@ -117,7 +117,7 @@ const handleTaskDrop = (
 
     // Drop ON a task: make it a subtask, insert at end
     if (draggedId !== targetTaskId) {
-        makeSubtaskDrop(draggedTask, targetTaskId, projectId, fromProjectId);
+        nestTaskUnder(draggedTask, targetTaskId, projectId, fromProjectId);
     } else {
         // Drop BETWEEN: move/reorder in parent group
         reorderDrop(
@@ -173,18 +173,13 @@ const isBlockedSubSubtaskDrop = (draggedTask, targetTask, isBelow) => {
 };
 
 // Makes a dragged task a subtask of the target task
-const makeSubtaskDrop = (
-    draggedTask,
-    targetTaskId,
-    projectId,
-    fromProjectId
-) => {
+const nestTaskUnder = (draggedTask, targetTaskId, projectId, fromProjectId) => {
     if (!hasSubtasks(draggedTask.id)) {
         draggedTask.parentTaskId = targetTaskId;
     }
     draggedTask.projectId = projectId;
 
-    handleTaskReorder(
+    reorderTaskInGroup(
         draggedTask.id,
         null, // insert at end
         projectId,
@@ -206,7 +201,7 @@ const reorderDrop = (
     draggedTask.parentTaskId = parentTaskId;
     draggedTask.projectId = projectId;
 
-    handleTaskReorder(
+    reorderTaskInGroup(
         draggedTask.id,
         targetTaskId,
         projectId,

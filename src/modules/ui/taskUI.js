@@ -165,7 +165,7 @@ const handleDueDateEdit = (task) => {
    ========================= */
 
 // Reorder tasks and subtasks via drag & drop
-const handleTaskReorder = (
+const reorderTaskInGroup = (
     draggedId,
     targetId,
     toProjectId,
@@ -173,38 +173,46 @@ const handleTaskReorder = (
     fromProjectId,
     parentTaskId = null
 ) => {
-    const allTasks = getAllTasks();
+    // ✅ Step 1: Get the dragged task and sibling group
     const dragged = getTaskById(draggedId);
-
     if (!dragged) return;
 
     if (dragged.projectId !== toProjectId) {
         dragged.projectId = toProjectId;
     }
 
-    const siblings = allTasks
+    const siblings = getAllTasks()
         .filter(
             (t) =>
                 t.projectId === toProjectId && t.parentTaskId === parentTaskId
         )
         .sort((a, b) => a.order - b.order);
-    const existingIndex = siblings.indexOf(dragged);
 
+    // ✅ Step 2: Remove the dragged task from its current sibling group
+    const existingIndex = siblings.findIndex((t) => t.id === draggedId);
     if (existingIndex !== -1) siblings.splice(existingIndex, 1);
 
-    const target = siblings.find((t) => t.id === targetId);
-    let targetIndex = siblings.indexOf(target);
+    // ✅ Step 3: Insert dragged task based on targetId and isBelow
+    let insertIndex;
 
-    if (targetIndex === -1) targetIndex = 0;
-
-    const insertIndex = targetIndex + (isBelow ? 1 : 0);
+    if (targetId) {
+        const targetIndex = siblings.findIndex((t) => t.id === targetId);
+        insertIndex =
+            targetIndex !== -1
+                ? targetIndex + (isBelow ? 1 : 0)
+                : siblings.length;
+    } else {
+        insertIndex = siblings.length;
+    }
 
     siblings.splice(insertIndex, 0, dragged);
+
+    // ✅ Step 4: Reassign .order, save, and render
     siblings.forEach((t, i) => (t.order = i));
 
     saveData({
         projects: getAllProjects(),
-        tasks: allTasks,
+        tasks: getAllTasks(),
     });
     renderProjects();
 };
@@ -410,7 +418,7 @@ export {
     handleDueDateEdit, // Edit task due date
 
     // --- Task Reorder (Drag & Drop) ---
-    handleTaskReorder, // Reorder tasks and subtasks via drag & drop
+    reorderTaskInGroup, // Reorder tasks and subtasks via drag & drop
 
     // --- Task UI Renderers ---
     renderAddTaskInput, // Render input for adding a new task
