@@ -178,14 +178,36 @@ const reorderTasksInProject = (projectId, draggedId, targetId, isBelow) => {
     const existingIndex = siblings.indexOf(dragged);
     if (existingIndex !== -1) siblings.splice(existingIndex, 1);
 
-    const targetIndex = siblings.findIndex((t) => t.id === targetId);
-    const insertIndex = targetIndex + (isBelow ? 1 : 0);
+    console.log("📦 targetId:", targetId);
+    console.log(
+        "🧩 siblings:",
+        siblings.map((t) => t.id)
+    );
+
+    let insertIndex;
+
+    if (!targetId || targetId === draggedId) {
+        insertIndex = siblings.length; // drop at end
+    } else {
+        const targetIndex = siblings.findIndex((t) => t.id === targetId);
+        insertIndex =
+            targetIndex === -1
+                ? siblings.length
+                : targetIndex + (isBelow ? 1 : 0);
+    }
 
     siblings.splice(insertIndex, 0, dragged);
     siblings.forEach((t, i) => (t.order = i));
+    console.log("🧠 Reordering tasks...");
+    console.log(
+        "Siblings:",
+        siblings.map((t) => ({ id: t.id, order: t.order }))
+    );
+    console.log("Dragged task:", dragged);
 
     saveData({ projects: getAllProjects(), tasks: allTasks });
 
+    console.log(dragged.order);
     renderProjects();
 };
 // Reorder tasks via drag & drop
@@ -209,13 +231,23 @@ const reorderSubtasksOf = (
     const existingIndex = siblings.indexOf(dragged);
     if (existingIndex !== -1) siblings.splice(existingIndex, 1);
 
-    const targetIndex = siblings.findIndex((t) => t.id === targetId);
-    const insertIndex = targetIndex + (isBelow ? 1 : 0);
+    let insertIndex;
+
+    if (!targetId || targetId === draggedId) {
+        insertIndex = siblings.length; // drop at end
+    } else {
+        const targetIndex = siblings.findIndex((t) => t.id === targetId);
+        insertIndex =
+            targetIndex === -1
+                ? siblings.length
+                : targetIndex + (isBelow ? 1 : 0);
+    }
 
     siblings.splice(insertIndex, 0, dragged);
     siblings.forEach((t, i) => (t.order = i));
 
     saveData({ projects: getAllProjects(), tasks: allTasks });
+
     renderProjects();
 };
 

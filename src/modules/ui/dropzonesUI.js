@@ -83,6 +83,11 @@ const renderDropZone = (
         dropZone.classList.remove("drag-over");
     });
 
+    dropZone.dataset.projectId = projectId;
+    dropZone.dataset.targetId = targetTaskId;
+    dropZone.dataset.isBelow = isBelow;
+    dropZone.dataset.parentTaskId = parentTaskId;
+
     return dropZone;
 };
 
@@ -109,26 +114,22 @@ const handleTaskDrop = (
     isBelow,
     parentTaskId = null
 ) => {
+    console.log("🚀 handleTaskDrop triggered");
+
     const { taskId: draggedId, fromProjectId } = data;
     const draggedTask = getTaskById(draggedId);
     const targetTask = getTaskById(targetTaskId);
 
     if (!draggedTask) return;
 
-    // Drop ON a task: make it a subtask, insert at end
-    if (draggedId !== targetTaskId) {
-        nestTaskUnder(draggedTask, targetTaskId, projectId, fromProjectId);
-    } else {
-        // Drop BETWEEN: move/reorder in parent group
-        reorderDrop(
-            draggedTask,
-            targetTaskId,
-            projectId,
-            isBelow,
-            fromProjectId,
-            parentTaskId
-        );
-    }
+    reorderDrop(
+        draggedTask,
+        targetTaskId,
+        projectId,
+        isBelow,
+        fromProjectId,
+        parentTaskId
+    );
 
     saveData({
         projects: getAllProjects(),
@@ -198,13 +199,22 @@ const reorderDrop = (
     fromProjectId,
     parentTaskId
 ) => {
-    draggedTask.parentTaskId = parentTaskId;
-    draggedTask.projectId = projectId;
+    console.log("📦 reorderDrop called", { parentTaskId });
+
     if (parentTaskId === null) {
         reorderTasksInProject(projectId, draggedTask.id, targetTaskId, isBelow);
     } else {
-        reorderSubtasksOf(parentTaskId, draggedTask.id, targetTaskId, isBelow);
+        reorderSubtasksOf(
+            projectId,
+            parentTaskId,
+            draggedTask.id,
+            targetTaskId,
+            isBelow
+        );
     }
+
+    draggedTask.parentTaskId = parentTaskId;
+    draggedTask.projectId = projectId;
 };
 
 /**
