@@ -51,7 +51,8 @@ const startProjectDrag = (e, projectId) => {
  */
 const handleProjectDropOnTask = (e, targetTask, targetProjectId) => {
     const data = JSON.parse(e.dataTransfer.getData("text/plain"));
-    console.log("data :", data);
+
+    if (!data.draggedProjectId) return;
 
     const draggedProject = getProject(data.draggedProjectId);
 
