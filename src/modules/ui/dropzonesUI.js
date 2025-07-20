@@ -113,11 +113,6 @@ const handleTaskDrop = (
     const draggedTask = getTaskById(draggedId);
     const targetTask = getTaskById(targetTaskId);
 
-    // if (isBlockedSubSubtaskDrop(draggedTask, targetTask, isBelow)) {
-    //     // Optionally show a message or just do nothing
-    //     return;
-    // }
-
     if (!draggedTask) return;
 
     // Drop ON a task: make it a subtask, insert at end
@@ -184,8 +179,9 @@ const makeSubtaskDrop = (
     projectId,
     fromProjectId
 ) => {
-    
-    draggedTask.parentTaskId = targetTaskId;
+    if (!hasSubtasks(draggedTask.id)) {
+        draggedTask.parentTaskId = targetTaskId;
+    }
     draggedTask.projectId = projectId;
 
     handleTaskReorder(
