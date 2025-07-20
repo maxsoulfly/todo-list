@@ -11,7 +11,7 @@ import {
     hasTasks,
 } from "../data.js";
 import { saveData } from "../storage.js";
-import { reorderTaskInGroup } from "./taskUI.js";
+import { reorderTasksInProject, reorderSubtasksOf } from "./taskUI.js";
 import {
     handleProjectReorder,
     handleDeleteProject,
@@ -179,7 +179,7 @@ const nestTaskUnder = (draggedTask, targetTaskId, projectId, fromProjectId) => {
     }
     draggedTask.projectId = projectId;
 
-    reorderTaskInGroup(
+    reorderTasksInProject(
         draggedTask.id,
         null, // insert at end
         projectId,
@@ -200,15 +200,11 @@ const reorderDrop = (
 ) => {
     draggedTask.parentTaskId = parentTaskId;
     draggedTask.projectId = projectId;
-
-    reorderTaskInGroup(
-        draggedTask.id,
-        targetTaskId,
-        projectId,
-        isBelow,
-        fromProjectId,
-        parentTaskId
-    );
+    if (parentTaskId === null) {
+        reorderTasksInProject(projectId, draggedTask.id, targetTaskId, isBelow);
+    } else {
+        reorderSubtasksOf(parentTaskId, draggedTask.id, targetTaskId, isBelow);
+    }
 };
 
 /**

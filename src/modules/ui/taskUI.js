@@ -164,56 +164,58 @@ const handleDueDateEdit = (task) => {
    TASK REORDER (DRAG & DROP)
    ========================= */
 
-// Reorder tasks and subtasks via drag & drop
-const reorderTaskInGroup = (
-    draggedId,
-    targetId,
-    toProjectId,
-    isBelow,
-    fromProjectId,
-    parentTaskId = null
-) => {
-    // ✅ Step 1: Get the dragged task and sibling group
-    const dragged = getTaskById(draggedId);
+// Reorder tasks via drag & drop
+const reorderTasksInProject = (projectId, draggedId, targetId, isBelow) => {
+    const allTasks = getAllTasks();
+    const siblings = allTasks
+        .filter((t) => t.projectId === projectId && t.parentTaskId === null)
+        .sort((a, b) => a.order - b.order);
+
+    const dragged = allTasks.find((t) => t.id === draggedId);
     if (!dragged) return;
 
-    if (dragged.projectId !== toProjectId) {
-        dragged.projectId = toProjectId;
-    }
+    // Remove if already in target list
+    const existingIndex = siblings.indexOf(dragged);
+    if (existingIndex !== -1) siblings.splice(existingIndex, 1);
 
-    const siblings = getAllTasks()
+    const targetIndex = siblings.findIndex((t) => t.id === targetId);
+    const insertIndex = targetIndex + (isBelow ? 1 : 0);
+
+    siblings.splice(insertIndex, 0, dragged);
+    siblings.forEach((t, i) => (t.order = i));
+
+    saveData({ projects: getAllProjects(), tasks: allTasks });
+
+    renderProjects();
+};
+// Reorder tasks via drag & drop
+const reorderSubtasksOf = (
+    projectId,
+    parentTaskId,
+    draggedId,
+    targetId,
+    isBelow
+) => {
+    const allTasks = getAllTasks();
+    const siblings = allTasks
         .filter(
-            (t) =>
-                t.projectId === toProjectId && t.parentTaskId === parentTaskId
+            (t) => t.projectId === projectId && t.parentTaskId === parentTaskId
         )
         .sort((a, b) => a.order - b.order);
 
-    // ✅ Step 2: Remove the dragged task from its current sibling group
-    const existingIndex = siblings.findIndex((t) => t.id === draggedId);
+    const dragged = allTasks.find((t) => t.id === draggedId);
+    if (!dragged) return;
+
+    const existingIndex = siblings.indexOf(dragged);
     if (existingIndex !== -1) siblings.splice(existingIndex, 1);
 
-    // ✅ Step 3: Insert dragged task based on targetId and isBelow
-    let insertIndex;
-
-    if (targetId) {
-        const targetIndex = siblings.findIndex((t) => t.id === targetId);
-        insertIndex =
-            targetIndex !== -1
-                ? targetIndex + (isBelow ? 1 : 0)
-                : siblings.length;
-    } else {
-        insertIndex = siblings.length;
-    }
+    const targetIndex = siblings.findIndex((t) => t.id === targetId);
+    const insertIndex = targetIndex + (isBelow ? 1 : 0);
 
     siblings.splice(insertIndex, 0, dragged);
-
-    // ✅ Step 4: Reassign .order, save, and render
     siblings.forEach((t, i) => (t.order = i));
 
-    saveData({
-        projects: getAllProjects(),
-        tasks: getAllTasks(),
-    });
+    saveData({ projects: getAllProjects(), tasks: allTasks });
     renderProjects();
 };
 
@@ -418,7 +420,8 @@ export {
     handleDueDateEdit, // Edit task due date
 
     // --- Task Reorder (Drag & Drop) ---
-    reorderTaskInGroup, // Reorder tasks and subtasks via drag & drop
+    reorderTasksInProject, // Reorder tasks via drag & drop
+    reorderSubtasksOf, // Reorder subtasks via drag & drop
 
     // --- Task UI Renderers ---
     renderAddTaskInput, // Render input for adding a new task
