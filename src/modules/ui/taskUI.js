@@ -419,20 +419,28 @@ const renderSubtasks = (task, projectId) => {
 const renderTasks = (projectId) => {
     const taskList = document.createElement("div");
     taskList.classList.add("task-list");
+
     const allTasks = getTasksForProject(projectId).sort(
         (a, b) => a.order - b.order
     );
     const parentTasks = allTasks.filter((task) => !task.parentTaskId);
+
     if (parentTasks.length === 0) {
         taskList.append(renderDropZone(projectId, null, true, null));
     } else {
-        taskList.append(renderDropZone(projectId, null, true, null));
         parentTasks.forEach((task) => {
+            // Dropzone ABOVE the task
+            taskList.append(renderDropZone(projectId, task.id, false, null));
+
             const taskElement = renderTask(task, projectId);
-            const parentDropZone = renderDropZone(projectId, null, true, null);
             taskList.append(taskElement);
+
+            // Render subtasks
             const subtaskList = renderSubtasks(task, projectId);
-            taskList.append(subtaskList, parentDropZone);
+            taskList.append(subtaskList);
+
+            // Dropzone BELOW the task (after subtasks too)
+            taskList.append(renderDropZone(projectId, task.id, true, null));
         });
     }
     return taskList;
