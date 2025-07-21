@@ -108,7 +108,6 @@ const handleProjectReorder = (draggedId, targetId, isAfter) => {
     allProjects.splice(insertIndex, 0, dragged);
 
     allProjects.forEach((t, i) => (t.order = i));
-    console.log("Reordering:", draggedId, "→", targetId, "after?", isAfter);
 
     saveData({
         projects: allProjects,

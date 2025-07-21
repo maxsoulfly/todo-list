@@ -178,12 +178,6 @@ const reorderTasksInProject = (projectId, draggedId, targetId, isBelow) => {
     const existingIndex = siblings.indexOf(dragged);
     if (existingIndex !== -1) siblings.splice(existingIndex, 1);
 
-    console.log("📦 targetId:", targetId);
-    console.log(
-        "🧩 siblings:",
-        siblings.map((t) => t.id)
-    );
-
     let insertIndex;
 
     if (!targetId || targetId === draggedId) {
@@ -198,16 +192,8 @@ const reorderTasksInProject = (projectId, draggedId, targetId, isBelow) => {
 
     siblings.splice(insertIndex, 0, dragged);
     siblings.forEach((t, i) => (t.order = i));
-    console.log("🧠 Reordering tasks...");
-    console.log(
-        "Siblings:",
-        siblings.map((t) => ({ id: t.id, order: t.order }))
-    );
-    console.log("Dragged task:", dragged);
-
     saveData({ projects: getAllProjects(), tasks: allTasks });
 
-    console.log(dragged.order);
     renderProjects();
 };
 // Reorder tasks via drag & drop
@@ -218,14 +204,6 @@ const reorderSubtasksOf = (
     targetId,
     isBelow
 ) => {
-    console.log("🔄 reorderSubtasksOf", {
-        projectId,
-        parentTaskId,
-        draggedId,
-        targetId,
-        isBelow,
-    });
-
     const allTasks = getAllTasks();
     const siblings = allTasks
         .filter(

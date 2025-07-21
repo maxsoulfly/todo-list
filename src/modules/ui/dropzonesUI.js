@@ -197,8 +197,6 @@ const reorderDrop = (
     fromProjectId,
     parentTaskId
 ) => {
-    console.log("📦 reorderDrop called", { parentTaskId });
-
     if (parentTaskId === null) {
         reorderTasksInProject(projectId, draggedTask.id, targetTaskId, isBelow);
     } else {
