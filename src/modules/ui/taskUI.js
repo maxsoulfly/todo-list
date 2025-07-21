@@ -218,6 +218,14 @@ const reorderSubtasksOf = (
     targetId,
     isBelow
 ) => {
+    console.log("🔄 reorderSubtasksOf", {
+        projectId,
+        parentTaskId,
+        draggedId,
+        targetId,
+        isBelow,
+    });
+
     const allTasks = getAllTasks();
     const siblings = allTasks
         .filter(
@@ -397,7 +405,7 @@ const renderTask = (task, projectId) => {
 
 // Render subtasks for a parent task
 const renderSubtasks = (task, projectId) => {
-    const subtasks = getSubtasks(task.id);
+    const subtasks = getSubtasks(task.id).sort((a, b) => a.order - b.order);
     const subtaskList = document.createElement("div");
     subtaskList.classList.add("subtask-list");
 

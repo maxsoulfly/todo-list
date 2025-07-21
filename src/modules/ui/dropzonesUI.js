@@ -114,8 +114,6 @@ const handleTaskDrop = (
     isBelow,
     parentTaskId = null
 ) => {
-    console.log("🚀 handleTaskDrop triggered");
-
     const { taskId: draggedId, fromProjectId } = data;
     const draggedTask = getTaskById(draggedId);
     const targetTask = getTaskById(targetTaskId);
