@@ -209,7 +209,10 @@ const reorderDrop = (
         );
     }
 
-    draggedTask.parentTaskId = parentTaskId;
+    // Only set parentTaskId if dragged task has NO subtasks
+    if (!hasSubtasks(draggedTask.id)) {
+        draggedTask.parentTaskId = parentTaskId;
+    }
     draggedTask.projectId = projectId;
 };
 
