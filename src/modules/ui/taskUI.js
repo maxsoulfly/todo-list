@@ -400,18 +400,28 @@ const renderSubtasks = (task, projectId) => {
     const subtasks = getSubtasks(task.id);
     const subtaskList = document.createElement("div");
     subtaskList.classList.add("subtask-list");
-    subtaskList.append(renderDropZone(projectId, task.id, true, task.id));
+
     subtasks.forEach((subtask) => {
+        // Dropzone above each subtask
+        subtaskList.append(
+            renderDropZone(projectId, subtask.id, false, task.id)
+        );
+
         const subtaskElement = renderTask(subtask, projectId);
         subtaskElement.classList.add("subtask");
-        const subDropZone = renderDropZone(
-            projectId,
-            subtask.id,
-            true,
-            task.id
-        );
-        subtaskList.append(subtaskElement, subDropZone);
+        subtaskList.append(subtaskElement);
     });
+
+    if (subtasks.length > 0) {
+        const lastSubtask = subtasks[subtasks.length - 1];
+        subtaskList.append(
+            renderDropZone(projectId, lastSubtask.id, true, task.id)
+        );
+    } else {
+        // If no subtasks, allow first drop at end of parent task
+        subtaskList.append(renderDropZone(projectId, task.id, true, task.id));
+    }
+
     return subtaskList;
 };
 
