@@ -85,6 +85,7 @@ const createTask = ({
         status: "todo",
         dueDate: dueDate,
         order: getTasksForProject(projectId).length,
+        collapsed: false,
     };
 };
 
@@ -122,6 +123,11 @@ const getSubtasks = (parentTaskId) => {
 // Check if a task has any subtasks
 const hasSubtasks = (taskId) => getSubtasks(taskId).length > 0;
 
+const isCollapsed = (taskId) => {
+    const task = getTaskById(taskId)
+    return task.collapsed;
+}
+
 // =======================
 // Data Utilities
 // =======================
@@ -133,31 +139,32 @@ const resetData = () => {
 };
 
 export {
-// =======================
-// Project CRUD
-// =======================
-    createProject,           // Create a new project object
-    addProject,              // Add a project to the projects array
-    deleteProject,           // Delete a project and its tasks
+    // =======================
+    // Project CRUD
+    // =======================
+    createProject, // Create a new project object
+    addProject, // Add a project to the projects array
+    deleteProject, // Delete a project and its tasks
     toggleProjectVisibility, // Toggle project hidden/visible state
-    getAllProjects,          // Get all projects, sorted by order
-    getProject,              // Get a project by its id
-    hasTasks,                // Check if a project has any tasks
+    getAllProjects, // Get all projects, sorted by order
+    getProject, // Get a project by its id
+    hasTasks, // Check if a project has any tasks
 
-// =======================
-// Task CRUD
-// =======================
-    createTask,              // Create a new task object
-    addTask,                 // Add a task to the tasks array
-    deleteTask,              // Delete a task by id
-    getAllTasks,             // Get all tasks
-    getTasksForProject,      // Get all tasks for a given project
-    getTaskById,             // Get a task by its id
-    getSubtasks,             // Get all subtasks for a parent task
-    hasSubtasks,             // Check if a task has any subtasks
+    // =======================
+    // Task CRUD
+    // =======================
+    createTask, // Create a new task object
+    addTask, // Add a task to the tasks array
+    deleteTask, // Delete a task by id
+    getAllTasks, // Get all tasks
+    getTasksForProject, // Get all tasks for a given project
+    getTaskById, // Get a task by its id
+    getSubtasks, // Get all subtasks for a parent task
+    hasSubtasks, // Check if a task has any subtasks
+    isCollapsed, // check if subtasks are collapsed
 
-// =======================
-// Data Utilities
-// =======================
-    resetData,               // Reset all projects and tasks
+    // =======================
+    // Data Utilities
+    // =======================
+    resetData, // Reset all projects and tasks
 };

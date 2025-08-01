@@ -7,6 +7,7 @@ import {
     addTask,
     deleteTask,
     getSubtasks,
+    isCollapsed,
 } from "../data.js";
 import { saveData } from "../storage.js";
 import { addTaskDraggability, addTaskDroppability } from "./dragUI.js";
@@ -411,6 +412,22 @@ const renderSubtasks = (task, projectId) => {
     return subtaskList;
 };
 
+const renderTaskBlock = (task, projectId) => {
+    const taskBlock = document.createElement("div");
+    const taskElement = renderTask(task, projectId);
+    taskBlock.append(taskElement);
+
+    // Render subtasks
+    if (isCollapsed(task.id)) {
+        // display ▶︎ (3)
+    } else {
+        const subtaskList = renderSubtasks(task, projectId);
+        taskBlock.append(subtaskList);
+    }
+
+    return taskBlock;
+};
+
 // Render all tasks for a project
 const renderTasks = (projectId) => {
     const taskList = document.createElement("div");
@@ -428,12 +445,7 @@ const renderTasks = (projectId) => {
             // Dropzone ABOVE the task
             taskList.append(renderDropZone(projectId, task.id, false, null));
 
-            const taskElement = renderTask(task, projectId);
-            taskList.append(taskElement);
-
-            // Render subtasks
-            const subtaskList = renderSubtasks(task, projectId);
-            taskList.append(subtaskList);
+            taskList.append(renderTaskBlock(task, projectId));
 
             // Dropzone BELOW the task (after subtasks too)
             taskList.append(renderDropZone(projectId, task.id, true, null));
