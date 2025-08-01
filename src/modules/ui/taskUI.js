@@ -32,10 +32,7 @@ const handleAddTaskKeyPress = (e, project, addTaskInput) => {
         parentTaskId: null,
     });
     addTask(newTask);
-    saveData({
-        projects: getAllProjects(),
-        tasks: getAllTasks(),
-    });
+    saveData();
     renderProjects();
     addTaskInput.value = "";
 };
@@ -49,7 +46,7 @@ const handleAddSubtaskTaskKeyPress = (e, projectId, input, parentTaskId) => {
             parentTaskId: parentTaskId,
         });
         addTask(newSubtask);
-        saveData({ projects: getAllProjects(), tasks: getAllTasks() });
+        saveData();
         renderProjects();
     }
     if (e.key === "Escape") input.remove();
@@ -60,10 +57,7 @@ const handleDeleteTask = (taskId) => {
     const subtasks = getSubtasks(taskId);
     subtasks.forEach((sub) => deleteTask(sub.id));
     deleteTask(taskId);
-    saveData({
-        projects: getAllProjects(),
-        tasks: getAllTasks(),
-    });
+    saveData();
     renderProjects();
 };
 
@@ -87,10 +81,7 @@ const handleEditTaskKeyDown = (e, task, editTitleInput) => {
             return;
         }
         task.title = editTitleInput.value.trim();
-        saveData({
-            projects: getAllProjects(),
-            tasks: getAllTasks(),
-        });
+        saveData();
         renderProjects();
     }
     if (e.key === "Escape") {
@@ -113,10 +104,7 @@ const handlePriorityToggle = (task) => {
         high: null,
     };
     task.priority = nextPriority[task.priority];
-    saveData({
-        projects: getAllProjects(),
-        tasks: getAllTasks(),
-    });
+    saveData();
     renderProjects();
 };
 
@@ -127,10 +115,7 @@ const handleStatusToggle = (task) => {
     if (realTask.status === "todo") realTask.status = "in-progress";
     else if (realTask.status === "in-progress") realTask.status = "done";
     else if (realTask.status === "done") realTask.status = "todo";
-    saveData({
-        projects: getAllProjects(),
-        tasks: getAllTasks(),
-    });
+    saveData();
     renderProjects();
 };
 
@@ -154,10 +139,7 @@ const handleDueDateEdit = (task) => {
     });
     function saveDate() {
         task.dueDate = dateInput.value || null;
-        saveData({
-            projects: getAllProjects(),
-            tasks: getAllTasks(),
-        });
+        saveData();
         renderProjects();
     }
 };
@@ -194,7 +176,7 @@ const reorderTasksInProject = (projectId, draggedId, targetId, isBelow) => {
 
     siblings.splice(insertIndex, 0, dragged);
     siblings.forEach((t, i) => (t.order = i));
-    saveData({ projects: getAllProjects(), tasks: allTasks });
+    saveData({ tasks: allTasks });
 
     renderProjects();
 };
@@ -234,7 +216,7 @@ const reorderSubtasksOf = (
     siblings.splice(insertIndex, 0, dragged);
     siblings.forEach((t, i) => (t.order = i));
 
-    saveData({ projects: getAllProjects(), tasks: allTasks });
+    saveData({ tasks: allTasks });
 
     renderProjects();
 };
@@ -343,7 +325,26 @@ const renderTaskTitleContainer = (task, projectId) => {
     titleContainer.append(priorityBar, statusToggle, taskTitle, dueDate);
     return { titleContainer, taskTitle };
 };
+// Renders caret toggle (with subtask count) for collapsing/expanding parent tasks.
+const renderCollapseToggle = (task) => {
+    const collapseToggleSpan = document.createElement("span");
 
+    if (isCollapsed(task.id)) {
+        // ▶︎ (3)
+        const subtasksCounter = getSubtasks(task.id).length;
+        collapseToggleSpan.textContent = `▶︎ (${subtasksCounter})`;
+    } else {
+        collapseToggleSpan.textContent = "▼";
+    }
+
+    collapseToggleSpan.addEventListener("click", (e) => {
+        task.collapsed = !task.collapsed;
+        saveData();
+        renderProjects();
+    });
+
+    return collapseToggleSpan;
+};
 // Render controls (edit, delete, add subtask) for a task
 const renderTaskControls = (task, taskTitle) => {
     const controls = document.createElement("span");
@@ -362,31 +363,14 @@ const renderTaskControls = (task, taskTitle) => {
         onClick: () => handleDeleteTask(task.id),
     });
     const menu = renderContextualMenu(menuItems);
+
+    // If task has subtasks, show collapse/expand toggle
+    if (hasSubtasks(task.id)) {
+        const collapseToggle = renderCollapseToggle(task);
+        controls.append(collapseToggle);
+    }
     controls.append(menu);
     return controls;
-};
-
-const renderCollapseToggle = (task) => {
-    const collapseToggleSpan = document.createElement("span");
-
-    if (isCollapsed(task.id)) {
-        // ▶︎ (3)
-        const subtasksCounter = getSubtasks(task.id).length;
-        collapseToggleSpan.textContent = `▶︎ (${subtasksCounter})`;
-    } else {
-        collapseToggleSpan.textContent = "▼";
-    }
-    collapseToggleSpan.addEventListener("click", (e) => {
-        task.collapsed = !task.collapsed;
-
-        saveData({
-            projects: getAllProjects(),
-            tasks: getAllTasks(),
-        });
-        renderProjects();
-    });
-
-    return collapseToggleSpan;
 };
 
 // Render a single task element with all controls and drag/drop
@@ -409,12 +393,6 @@ const renderTask = (task, projectId) => {
         projectId
     );
     taskContainer.append(titleContainer);
-
-    // If task has subtasks, show collapse/expand toggle
-    if (hasSubtasks(task.id)) {
-        const collapseToggle = renderCollapseToggle(task);
-        taskContainer.append(collapseToggle);
-    }
 
     // Render edit, delete, and add subtask controls
     const taskControls = renderTaskControls(task, taskTitle);
