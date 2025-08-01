@@ -1,6 +1,9 @@
 import { getAllProjects, getAllTasks } from "./data.js";
 
-const saveData = ({ projects = getAllProjects(), tasks = getAllTasks() }) => {
+const saveData = ({
+    projects = getAllProjects(),
+    tasks = getAllTasks(),
+} = {}) => {
     localStorage.setItem("todoData", JSON.stringify({ projects, tasks }));
 };
 
