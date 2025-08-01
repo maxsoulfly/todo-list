@@ -9,7 +9,7 @@ Fully client-side and open source.
 - 1-level deep subtasks (strict, no nesting of subtasks)
 - Collapse/expand parent tasks with subtask count indicator
 - Contextual menus for adding subtasks
-- Due date support (badge ready, coloring optional)
+- Due date support (badge ready, coloring [TODO])
 - Modular code split (projectUI, taskUI, data.js, etc.)
 - Local storage persistence
 - Keyboard and accessibility-friendly UI (if done)
@@ -24,8 +24,9 @@ _(Add your GitHub Pages link here when deployed)_
 **To run locally:**
 
 1. Clone the repo  
-2. Open `index.html` in your browser  
-   *No build steps required—works out of the box!*
+2. Run `npm install`  
+3. Run `npm run build`  
+4. Open `/dist/index.html` in your browser
 
 ## Project Structure
 
