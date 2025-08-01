@@ -128,8 +128,6 @@ const isCollapsed = (taskId) => {
     return task.collapsed;
 };
 
-const toggleCollapsed = (taskId) => {};
-
 // =======================
 // Data Utilities
 // =======================
