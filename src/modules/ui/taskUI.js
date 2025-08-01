@@ -8,6 +8,7 @@ import {
     deleteTask,
     getSubtasks,
     isCollapsed,
+    hasSubtasks,
 } from "../data.js";
 import { saveData } from "../storage.js";
 import { addTaskDraggability, addTaskDroppability } from "./dragUI.js";
@@ -365,6 +366,20 @@ const renderTaskControls = (task, taskTitle) => {
     return controls;
 };
 
+const renderCollapseToggle = (task) => {
+    const collapseToggleSpan = document.createElement("span");
+
+    if (isCollapsed(task.id)) {
+        // ▶︎ (3)
+        const subtasksCounter = getSubtasks(task.id).length;
+        collapseToggleSpan.textContent = `▶︎ (${subtasksCounter})`;
+    } else {
+        collapseToggleSpan.textContent = "▼";
+    }
+
+    return collapseToggleSpan;
+};
+
 // Render a single task element
 const renderTask = (task, projectId) => {
     const taskContainer = document.createElement("p");
@@ -377,8 +392,17 @@ const renderTask = (task, projectId) => {
         task,
         projectId
     );
+
+    taskContainer.append(titleContainer);
+
+    if (hasSubtasks(task.id)) {
+        const collapseToggle = renderCollapseToggle(task);
+        taskContainer.append(collapseToggle);
+    }
+
     const taskControls = renderTaskControls(task, taskTitle);
-    taskContainer.append(titleContainer, taskControls);
+
+    taskContainer.append(taskControls);
     return taskContainer;
 };
 
@@ -412,22 +436,6 @@ const renderSubtasks = (task, projectId) => {
     return subtaskList;
 };
 
-const renderTaskBlock = (task, projectId) => {
-    const taskBlock = document.createElement("div");
-    const taskElement = renderTask(task, projectId);
-    taskBlock.append(taskElement);
-
-    // Render subtasks
-    if (isCollapsed(task.id)) {
-        // display ▶︎ (3)
-    } else {
-        const subtaskList = renderSubtasks(task, projectId);
-        taskBlock.append(subtaskList);
-    }
-
-    return taskBlock;
-};
-
 // Render all tasks for a project
 const renderTasks = (projectId) => {
     const taskList = document.createElement("div");
@@ -445,7 +453,14 @@ const renderTasks = (projectId) => {
             // Dropzone ABOVE the task
             taskList.append(renderDropZone(projectId, task.id, false, null));
 
-            taskList.append(renderTaskBlock(task, projectId));
+            const taskElement = renderTask(task, projectId);
+            taskList.append(taskElement);
+
+            // Render subtasks
+            if (!isCollapsed(task.id)) {
+                const subtaskList = renderSubtasks(task, projectId);
+                taskList.append(subtaskList);
+            }
 
             // Dropzone BELOW the task (after subtasks too)
             taskList.append(renderDropZone(projectId, task.id, true, null));
