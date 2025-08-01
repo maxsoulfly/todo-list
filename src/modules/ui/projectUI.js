@@ -111,7 +111,6 @@ const handleProjectReorder = (draggedId, targetId, isAfter) => {
 
     saveData({
         projects: allProjects,
-        tasks: getAllTasks(),
     });
 
     renderProjects();
@@ -134,20 +133,14 @@ const promoteTaskToProject = (taskId) => {
 
     handleDeleteTask(taskId);
 
-    saveData({
-        projects: getAllProjects(),
-        tasks: getAllTasks(),
-    });
+    saveData();
     renderProjects();
 };
 
 // Delete a project and update UI
 const handleDeleteProject = (projectId) => {
     deleteProject(projectId);
-    saveData({
-        projects: getAllProjects(),
-        tasks: getAllTasks(),
-    });
+    saveData();
 
     renderProjects();
 };
@@ -161,10 +154,7 @@ const handleEditProjectKeyDown = (e, project, editTitleInput) => {
             return;
         }
         project.title = editTitleInput.value.trim();
-        saveData({
-            projects: getAllProjects(),
-            tasks: getAllTasks(),
-        });
+        saveData();
         renderProjects();
     }
 
@@ -197,8 +187,8 @@ const handleAddProjectKeyDown = (e, addProjectInput, addProjectBtn) => {
 
         const newProject = createProject(addProjectInput.value);
         addProject(newProject);
-        saveData({ projects: getAllProjects(), tasks: getAllTasks() });
 
+        saveData();
         renderProjects();
 
         addProjectInput.replaceWith(addProjectBtn);
