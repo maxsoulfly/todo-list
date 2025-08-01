@@ -376,33 +376,50 @@ const renderCollapseToggle = (task) => {
     } else {
         collapseToggleSpan.textContent = "▼";
     }
+    collapseToggleSpan.addEventListener("click", (e) => {
+        task.collapsed = !task.collapsed;
+
+        saveData({
+            projects: getAllProjects(),
+            tasks: getAllTasks(),
+        });
+        renderProjects();
+    });
 
     return collapseToggleSpan;
 };
 
-// Render a single task element
+// Render a single task element with all controls and drag/drop
 const renderTask = (task, projectId) => {
+    // Create main container for the task
     const taskContainer = document.createElement("p");
     taskContainer.classList.add(`priority-${task.priority}`);
     taskContainer.classList.add(`status-${task.status}`);
     taskContainer.classList.add("task");
+
+    // Make the task draggable
     addTaskDraggability(taskContainer, task, projectId);
+
+    // Make the task droppable (for parent tasks)
     if (!task.parentTaskId) addTaskDroppability(taskContainer, task, projectId);
+
+    // Render the title, priority, status, and due date
     const { titleContainer, taskTitle } = renderTaskTitleContainer(
         task,
         projectId
     );
-
     taskContainer.append(titleContainer);
 
+    // If task has subtasks, show collapse/expand toggle
     if (hasSubtasks(task.id)) {
         const collapseToggle = renderCollapseToggle(task);
         taskContainer.append(collapseToggle);
     }
 
+    // Render edit, delete, and add subtask controls
     const taskControls = renderTaskControls(task, taskTitle);
-
     taskContainer.append(taskControls);
+
     return taskContainer;
 };
 

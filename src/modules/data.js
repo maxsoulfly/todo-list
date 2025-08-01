@@ -124,9 +124,11 @@ const getSubtasks = (parentTaskId) => {
 const hasSubtasks = (taskId) => getSubtasks(taskId).length > 0;
 
 const isCollapsed = (taskId) => {
-    const task = getTaskById(taskId)
+    const task = getTaskById(taskId);
     return task.collapsed;
-}
+};
+
+const toggleCollapsed = (taskId) => {};
 
 // =======================
 // Data Utilities
