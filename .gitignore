@@ -1,0 +1,13 @@
+# Node modules
+node_modules/
+
+# Build output
+dist/
+
+# System/Editor files
+.DS_Store
+.env
+*.log
+
+# VSCode
+.vscode/
