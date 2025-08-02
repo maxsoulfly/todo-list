@@ -569,6 +569,55 @@ input[type="text"] {
 	cursor          : pointer;
 }
 
+
+@media (max-width: 600px) {
+	#app {
+		flex-direction: column;
+		padding       : 0.5rem;
+	}
+
+	.project-column {
+		min-width       : unset;
+		/* width        : 100vw; */
+		margin-bottom   : 1.5rem;
+		padding         : 1rem 0.5rem;
+	}
+
+	#sidebar {
+		position: fixed;
+		width   : 100vw;
+		z-index : 1000;
+		height  : 100%;
+	}
+
+	#sidebar-toggle {
+		/* position : fixed; */
+		left     : 0rem;
+		top      : 0.5rem;
+		right    : unset;
+		font-size: 1.5rem;
+		z-index  : 1100;
+	}
+
+	button,
+	input[type="text"],
+	.sidebar-project-item {
+		font-size: 1rem;
+		padding  : 0.7em 1em;
+	}
+
+	.task-list p {
+		font-size: 0.95rem;
+		padding  : 0.4rem;
+		flex-wrap: wrap;
+	}
+
+	.task-title {
+		gap: 0.3rem;
+	}
+}
+
+
 /* ===========================================================
 	End of style.css
 =========================================================== */
