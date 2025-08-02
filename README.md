@@ -17,7 +17,7 @@ Fully client-side and open source.
 ## Demo
 
 **Live Demo:**  
-_(Add your GitHub Pages link here when deployed)_
+[Live Demo](https://maxsoulfly.github.io/todo-list/)
 
 ## Getting Started
 
